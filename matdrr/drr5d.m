@@ -163,8 +163,8 @@ function [dout]=P_R(din,N,K)
 %      [U,D,V]=svds(din,N); % a little bit slower for small matrix
 %      dout=U*D*V';
 % %      
-    [U,D,V]=svds(din,K+1);
-    for j=1:K
+    [U,D,V]=svds(din,N+1);
+    for j=1:N
         D(j,j)=D(j,j)*(1-D(N+1,N+1)^K/(D(j,j)^K+0.000000000000001));
     end  
     

@@ -84,10 +84,10 @@ subplot(3,1,2);imagesc(reshape(d0(:,5,5,:,:),nt,10*10));caxis([-0.3,0.3]);colorm
 subplot(3,1,3);imagesc(reshape(d2(:,5,5,:,:),nt,10*10));caxis([-0.3,0.3]);colormap(jet);
 
 
-drr_snr(d(:,:),dn(:,:)) %
-drr_snr(d(:,:),d0(:,:)) %
-drr_snr(d(:,:),d1(:,:)) %
-drr_snr(d(:,:),d2(:,:)) %
+drr_snr(d(:,:),dn(:,:)) %-8.6178
+drr_snr(d(:,:),d0(:,:)) %-4.5929
+drr_snr(d(:,:),d1(:,:)) %7.5638
+drr_snr(d(:,:),d2(:,:)) %11.5626
 
 
 

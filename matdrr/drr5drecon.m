@@ -203,8 +203,8 @@ switch iflb
             %         [U,B,V]=svds(din,N+1); % a little bit slower for small matrix
             %         [U,B,V]=svd(din); % a little bit slower for small matrix
             
-            [U,B,V]=svds(din,K+1);
-            for j=1:K
+            [U,B,V]=svds(din,N+1);
+            for j=1:N
                 B(j,j)=B(j,j)*(1-B(N+1,N+1)^K/(B(j,j)^K+0.000000000000001));
             end
             

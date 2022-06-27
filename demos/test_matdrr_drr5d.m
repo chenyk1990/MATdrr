@@ -47,7 +47,7 @@ figure;
 subplot(2,1,1);imagesc(reshape(d(:,:,:,1,1),100,10*10));colormap(jet);
 subplot(2,1,2);imagesc(reshape(dn(:,:,:,1,1),100,10*10));colormap(jet);
 
-%% denoise (Traditonal MSSA)
+%% denoise (Traditonal RR)
 flow=5;fhigh=100;dt=0.004;N=4;
 d1=drr5d(dn,flow,fhigh,dt,N,100,1);
 figure;
@@ -55,7 +55,7 @@ subplot(3,1,1);imagesc(reshape(d(:,:,:,1,1),100,10*10));colormap(jet);
 subplot(3,1,2);imagesc(reshape(dn(:,:,:,1,1),100,10*10));colormap(jet);
 subplot(3,1,3);imagesc(reshape(d1(:,:,:,1,1),100,10*10));colormap(jet);
 
-%% denoise (DMSSA)
+%% denoise (DRR)
 flow=5;fhigh=100;dt=0.004;N=4;NN=2;
 d2=drr5d(dn,flow,fhigh,dt,N,NN,1);
 figure;
