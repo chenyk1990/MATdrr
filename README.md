@@ -49,7 +49,7 @@ BibTeX:
 -----------
 ## Copyright
     Initial version: Yangkang Chen (chenyk2016@gmail.com), 2021-2022
-	Later version: pydrr developing team, 2022-present
+	Later version: MATdrr developing team, 2022-present
 -----------
 
 ## License
@@ -67,11 +67,11 @@ Using the latest version
     
 -----------
 ## Examples
-    The "demo" directory contains all runable scripts to demonstrate different applications of pydrr. 
+    The "demo" directory contains all runable scripts to demonstrate different applications of MATdrr. 
     
 -----------
 ## Gallery
-The gallery figures of the pydrr package can be found at
+The gallery figures of the MATdrr package can be found at
     https://github.com/chenyk1990/gallery/tree/main/MATdrr
 Each figure in the gallery directory corresponds to a DEMO script in the "demo" directory with the exactly the same file name.
 
