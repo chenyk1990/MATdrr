@@ -62,7 +62,7 @@ BibTeX:
 Using the latest version
 
     git clone https://github.com/chenyk1990/MATdrr
-    cd pydrr
+    cd MATdrr
     addpath(genpath('./')); #in Matlab command line
     
 -----------
