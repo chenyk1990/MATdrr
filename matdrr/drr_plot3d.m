@@ -1,17 +1,30 @@
-function [] = yc_plot3d(d3d,frames,z,x,y)
-%%
-%INPUT
-%d3d: 3D input
-%frames: vecotr [3x1], frame1,2,3
-%z:axis
-%x:axis
-%y:axis
+function [] = drr_plot3d(d3d,frames,z,x,y)
+%%drr_plot3d: plot beautiful 3D slices
+% 
+% By Yangkang Chen
+% Jan, 2022
+% 
+% INPUT
+% d3d: 3D input
+% frames: vecotr [3x1], frame1,2,3
+% z:axis
+% x:axis
+% y:axis
 %
-%OUTPUT
-%NO
+% OUTPUT
+% NO
 %
 % DEMO
-% test/test_plot_yc_mada3d.m
+% demos/test_matdrr_drr3d_diffraction.m
+% 
+% REFERENCE
+% If you find this plotting function useful, please cite the following
+% paper to recognize the authors' credit, where this script was originally created.
+% 
+% Chen, Y., S. Fomel, and R. Abma. Joint deblending and source time inversion, 87(6), doi: 10.1190/geo2022-0149.1.
+% 
+
+
 
 % load data3ddb.mat
 data=d3d;
@@ -61,10 +74,10 @@ dd=data;
 
 %shift data
 % d2=shiftdim(d,1);%fix d, the creation and plot are separated
-% d2=db_transp(d2,12);
+% d2=drr_transp(d2,12);
 
 dd2=shiftdim(dd,1);%fix d, the creation and plot are separated
-dd2=db_transp(dd2,12);
+dd2=drr_transp(dd2,12);
 
 
 [x2,y2,z2]=meshgrid(x,y,z);

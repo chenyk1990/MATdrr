@@ -17,6 +17,7 @@
 %  References:   
 %
 %  Wang et al., 2020, Separation and imaging of seismic diffractions using a localized rank-reduction method with adaptively selected ranks, 85, V497–V506.
+%  Chen et al., 2022, 3D seismic diffraction separation and imaging using the local rank-reduction method, IEEE Transactions on Geoscience and Remote Sensing, 60, 4507110.
 %  Chen et al., 2019, Obtaining free USArray data by multi-dimensional seismic reconstruction, Nature Communications, 10:4434.
 %  Bai et al., 2020, Seismic signal enhancement based on the lowrank methods, Geophysical Prospecting, 68, 2783-2807.
 %  Chen et al., 2020, Five-dimensional seismic data reconstruction using the optimally damped rank-reduction method, Geophysical Journal International, 222, 1824-1845.
@@ -45,10 +46,10 @@ d1=drr3d_win_auto(data,lf,hf,dt,N,K,verb,n1win,n2win,n3win,r1,r2,r3,mode);%refle
 diffr1=data-d1; %diffraction from LDRR 
 
 % Quick visualization
-figure;drr_imagesc([data,diffr,n1,data-diffr,d1]);
+figure;drr_imagesc([data,diffr,diffr1,data-diffr,d1]);
 
 %% SNR of the separated diffraction
-drr_snr(diffr,n1)
+drr_snr(diffr,diffr1)
 
 
 %% plot the results
