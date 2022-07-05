@@ -81,11 +81,11 @@ Each figure in the gallery directory corresponds to a DEMO script in the "demo" 
 
 -----------
 ## Naming criteria
-drr3d_xxx.m corresponds to all functions.
-drr_xxx.m corresponds to all subroutines.
-localxxx.m corresponds to key functions in local windows.
-test_xxx.m corresponds to all DEMO scripts that are runnable.
-
+    drr3d_xxx.m corresponds to all functions.
+    drr_xxx.m corresponds to all subroutines.
+    localxxx.m corresponds to key functions in local windows.
+    test_xxx.m corresponds to all DEMO scripts that are runnable.
+    
 -----------
 ## Development
     The development team welcomes voluntary contributions from any open-source enthusiast. 
