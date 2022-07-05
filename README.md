@@ -80,6 +80,13 @@ Each figure in the gallery directory corresponds to a DEMO script in the "demo" 
 * Matlab 2015 and later versions
 
 -----------
+## Naming criteria
+drr3d_xxx.m corresponds to all functions.
+drr_xxx.m corresponds to all subroutines.
+localxxx.m corresponds to key functions in local windows.
+test_xxx.m corresponds to all DEMO scripts that are runnable.
+
+-----------
 ## Development
     The development team welcomes voluntary contributions from any open-source enthusiast. 
     If you want to make contribution to this project, feel free to contact the development team. 
