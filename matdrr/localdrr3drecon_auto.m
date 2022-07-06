@@ -1,5 +1,5 @@
-function [ DATA_out ] = localdrr3d_auto( DATA_in, param )
-% Local DRR with automatically chosen ranks
+function [ DATA_out ] = localdrr3drecon_auto( DATA_in, param )
+% Local DRR reconstruction with automatically chosen ranks
 %
 %  Copyright (C) 2020 Yangkang Chen
 %
@@ -10,7 +10,7 @@ function [ DATA_out ] = localdrr3d_auto( DATA_in, param )
 % param.lf:   	min  freq. in the data in Hz
 % param.hf:  	max  freq. in the data in Hz
 % param.N
-% param.K
+% param.NN
 %
 %  REFERENCES
 %  Wang et al., 2020, Separation and imaging of seismic diffractions using a localized rank-reduction method with adaptively selected ranks, doi: 10.1190/geo2020-0215.1.
@@ -21,20 +21,24 @@ function [ DATA_out ] = localdrr3d_auto( DATA_in, param )
 %  Chen, Y., D. Zhang, Z. Jin, X. Chen, S. Zu, W. Huang, and S. Gan, 2016, Simultaneous denoising and reconstruction of 5D seismic data via damped rank-reduction method, Geophysical Journal International, 206, 1695-1717.
 %  Huang, W., R. Wang, Y. Chen, H. Li, and S. Gan, 2016, Damped multichannel singular spectrum analysis for 3D random noise attenuation, Geophysics, 81, V261-V270.
 %  Chen et al., 2017, Preserving the discontinuities in least-squares reverse time migration of simultaneous-source data, Geophysics, 82, S185-S196.
-%
+
+mask=param.mask;
+flow=param.flow;
+fhigh=param.fhigh;
 dt=param.dt;
 N=param.N;
 K=param.K;
-flow=param.flow;
-fhigh=param.fhigh;
+niter=param.niter;
+eps=param.eps;
 verb=param.verb;
 mode=param.mode;
+amode=param.amode;
+a=param.a;
 f=0;
 
 %% N is a scalar (Nmax) or a vector (Nmin,Nmax), 
 
-% in the presence of maximum rank constraint, N is a two-entries vector (N,N2)
-DATA_out=drr3d_auto(DATA_in,flow,fhigh,dt,N,K,verb,mode,f,eps);
+DATA_out=drr3drecon_auto(DATA_in,mask,flow,fhigh,dt,N,K,niter,eps,verb,mode,amode,a);
 
 return
 
