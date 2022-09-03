@@ -79,8 +79,8 @@ d0=dn.*mask;
 flow=0;fhigh=125;dt=0.004;N=3;Niter=10;mode=0;verb=1;
 d1=drr3drecon(d0,mask,flow,fhigh,dt,50,N,Niter,eps,verb,mode);
 
-% 2D quick comparison (clean,noisy,observed,reconstructed using MSSA)
-figure;imagesc([d(:,:,9),d0(:,:,9),d1(:,:,9)]);caxis([-0.5,0.5]);colormap(jet);
+% 2D quick comparison (clean,noisy,observed,reconstructed using RR)
+figure;drr_imagesc([d(:,:,9),d0(:,:,9),d1(:,:,9)]);caxis([-0.5,0.5]);
 
 %% simultaneous denoising and reconstruction
 % adding noise
@@ -89,26 +89,26 @@ var=0.2;
 dn=d+var*randn(size(d));
 d0=dn.*mask;
 
-% using MSSA (when K is suffiently large, see derivations in the references)
+%% using RR (when K is suffiently large, see derivations in the references)
 flow=0;fhigh=250;dt=0.002;N=3;Niter=10;mode=1;verb=1;
 a=(Niter-(1:Niter))/(Niter-1); %linearly decreasing
 d1=drr3drecon(d0,mask,flow,fhigh,dt,N,100,Niter,eps,verb,mode,a);
 
 % 2D quick comparison
-figure;imagesc([d(:,:,9),d0(:,:,9),d1(:,:,9)]);caxis([-0.5,0.5]);colormap(jet);
+figure;drr_imagesc([d(:,:,9),d0(:,:,9),d1(:,:,9)]);caxis([-0.5,0.5]);
 
-% using DMSSA
+%% using DRR
 flow=0;fhigh=250;dt=0.002;N=3;Niter=10;mode=1;verb=1;K=2;
 a=(Niter-(1:Niter))/(Niter-1); %linearly decreasing
 d2=drr3drecon(d0,mask,flow,fhigh,dt,N,K,Niter,eps,verb,mode,a);
 
 % 2D quick comparison
-figure;imagesc([d(:,:,9),d0(:,:,9),d2(:,:,9)]);caxis([-0.5,0.5]);colormap(jet);
+figure;drr_imagesc([d(:,:,9),d0(:,:,9),d2(:,:,9)]);caxis([-0.5,0.5]);
 
 %% calculate Signal-to-noise Ratio (SNR)
 drr_snr(d,d0,2) %observed data
-drr_snr(d,d1,2) %MSSA method
-drr_snr(d,d2,2) %DMSSA method
+drr_snr(d,d1,2) %RR method
+drr_snr(d,d2,2) %DRR method
 
 %SNR results (might be slightly different for different PC platforms)
 %d0: -5.9853

@@ -1,7 +1,7 @@
-%  5D seismic data denoising via rank reduction (DMSSA)
+%  5D seismic data denoising via the damped rank-reduction method
 %  
-%  Copyright (C) 2015 The University of Texas at Austin
-%  Copyright (C) 2015 Yangkang Chen
+%  Copyright (C) 2022 The University of Texas at Austin
+%  Copyright (C) 2022 Yangkang Chen
 %
 %  This program is free software: you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published
@@ -37,10 +37,10 @@ dt=0.004;
 
 %% exploring the data
 %1) ploting CMP gather
-figure;imagesc(reshape(d(:,:,:,1,1),100,10*10));colormap(jet);
+figure;drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
 
 %2) ploting common offset gather
-figure;imagesc(reshape(d(:,5,5,:,:),100,10*10));colormap(jet);
+figure;drr_imagesc(reshape(d(:,5,5,:,:),100,10*10));
 
 %% simultaneous denoising and reconstruction
 randn('state',201314);
@@ -55,35 +55,35 @@ mask=reshape(mask,nt,nhx,nhy,nx,ny);
 d0=dn.*mask;
 
 %% RR5D
-flow=5;fhigh=100;dt=0.004;N=6;Niter=10;mode=1;verb=1;iflb=0;
+flow=5;fhigh=100;dt=0.004;N=6;Niter=10;mode=1;verb=1;
 a=(Niter-(1:Niter))/(Niter-1); %linearly decreasing
-d1=drr5drecon(d0,mask,flow,fhigh,dt,N,50,Niter,eps,verb,mode,iflb,a);
+d1=drr5drecon(d0,mask,flow,fhigh,dt,N,50,Niter,eps,verb,mode,a);
 
 figure;
-subplot(3,1,1);imagesc(reshape(d(:,:,:,1,1),nt,10*10));
-subplot(3,1,2);imagesc(reshape(d0(:,:,:,1,1),nt,10*10));
-subplot(3,1,3);imagesc(reshape(d1(:,:,:,1,1),nt,10*10));
+subplot(3,1,1);drr_imagesc(reshape(d(:,:,:,1,1),nt,10*10));
+subplot(3,1,2);drr_imagesc(reshape(d0(:,:,:,1,1),nt,10*10));
+subplot(3,1,3);drr_imagesc(reshape(d1(:,:,:,1,1),nt,10*10));
 
 figure;
-subplot(3,1,1);imagesc(reshape(d(:,5,5,:,:),nt,10*10));
-subplot(3,1,2);imagesc(reshape(d0(:,5,5,:,:),nt,10*10));
-subplot(3,1,3);imagesc(reshape(d1(:,5,5,:,:),nt,10*10));
+subplot(3,1,1);drr_imagesc(reshape(d(:,5,5,:,:),nt,10*10));
+subplot(3,1,2);drr_imagesc(reshape(d0(:,5,5,:,:),nt,10*10));
+subplot(3,1,3);drr_imagesc(reshape(d1(:,5,5,:,:),nt,10*10));
 
 %% DRR5D
-flow=5;fhigh=100;dt=0.004;N=6;K=2;Niter=10;mode=1;verb=1;iflb=0;
-d2=drr5drecon(d0,mask,flow,fhigh,dt,N,K,Niter,eps,verb,mode,iflb,a);
+flow=5;fhigh=100;dt=0.004;N=6;K=2;Niter=10;mode=1;verb=1;
+d2=drr5drecon(d0,mask,flow,fhigh,dt,N,K,Niter,eps,verb,mode,a);
 
 figure;
-subplot(3,1,1);imagesc(reshape(d(:,:,:,1,1),nt,10*10));
-subplot(3,1,2);imagesc(reshape(d0(:,:,:,1,1),nt,10*10));
-subplot(3,1,3);imagesc(reshape(d2(:,:,:,1,1),nt,10*10));
+subplot(3,1,1);drr_imagesc(reshape(d(:,:,:,1,1),nt,10*10));
+subplot(3,1,2);drr_imagesc(reshape(d0(:,:,:,1,1),nt,10*10));
+subplot(3,1,3);drr_imagesc(reshape(d2(:,:,:,1,1),nt,10*10));
 
 figure;
-subplot(3,1,1);imagesc(reshape(d(:,5,5,:,:),nt,10*10));caxis([-0.3,0.3]);colormap(jet);
-subplot(3,1,2);imagesc(reshape(d0(:,5,5,:,:),nt,10*10));caxis([-0.3,0.3]);colormap(jet);
-subplot(3,1,3);imagesc(reshape(d2(:,5,5,:,:),nt,10*10));caxis([-0.3,0.3]);colormap(jet);
+subplot(3,1,1);drr_imagesc(reshape(d(:,5,5,:,:),nt,10*10));caxis([-0.3,0.3]);
+subplot(3,1,2);drr_imagesc(reshape(d0(:,5,5,:,:),nt,10*10));caxis([-0.3,0.3]);
+subplot(3,1,3);drr_imagesc(reshape(d2(:,5,5,:,:),nt,10*10));caxis([-0.3,0.3]);
 
-
+%% calculate Signal-to-noise Ratio (SNR)
 drr_snr(d(:,:),dn(:,:)) %-8.6178
 drr_snr(d(:,:),d0(:,:)) %-4.5929
 drr_snr(d(:,:),d1(:,:)) %7.5638

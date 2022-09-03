@@ -48,7 +48,7 @@ subplot(2,1,1);drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
 subplot(2,1,2);drr_imagesc(reshape(dn(:,:,:,1,1),100,10*10));
 
 %% denoise (Traditonal RR)
-flow=5;fhigh=100;dt=0.004;N=4;
+flow=1;fhigh=100;dt=0.004;N=20;
 d1=drr5d(dn,flow,fhigh,dt,N,100,1);
 figure;
 subplot(3,1,1);drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
@@ -56,21 +56,33 @@ subplot(3,1,2);drr_imagesc(reshape(dn(:,:,:,1,1),100,10*10));
 subplot(3,1,3);drr_imagesc(reshape(d1(:,:,:,1,1),100,10*10));
 
 %% denoise (DRR)
-flow=5;fhigh=100;dt=0.004;N=4;K=2;
+flow=1;fhigh=100;dt=0.004;N=20;K=4;
 d2=drr5d(dn,flow,fhigh,dt,N,K,1);
 figure;
 subplot(3,1,1);drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
 subplot(3,1,2);drr_imagesc(reshape(dn(:,:,:,1,1),100,10*10));
 subplot(3,1,3);drr_imagesc(reshape(d2(:,:,:,1,1),100,10*10));
 
-s0=reshape(d(:,:,:,1,1),100,10*10);
-sn=reshape(dn(:,:,:,1,1),100,10*10);
-s1=reshape(d1(:,:,:,1,1),100,10*10);
-s2=reshape(d2(:,:,:,1,1),100,10*10);
+%% denoise (ODRR)
+flow=1;fhigh=100;dt=0.004;N=20;K=4;O=1;
+d3=odrr5d(dn,flow,fhigh,dt,N,K,O,1);
+figure;
+subplot(3,1,1);drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
+subplot(3,1,2);drr_imagesc(reshape(dn(:,:,:,1,1),100,10*10));
+subplot(3,1,3);drr_imagesc(reshape(d3(:,:,:,1,1),100,10*10));
 
-drr_snr(s0,sn) %-6.7209
-drr_snr(s0,s1) %16.5590
-drr_snr(s0,s2) %18.2507
+%% calculate Signal-to-noise Ratio (SNR)
+drr_snr(d(:,:),dn(:,:))
+drr_snr(d(:,:),d1(:,:))
+drr_snr(d(:,:),d2(:,:))
+drr_snr(d(:,:),d3(:,:))
+
+
+% SNR when N=20; (when rank over-estimated)
+% sn=-6.6662;
+% s1=10.4512;
+% s2=18.2299;
+% s3=19.0101;
 
 
 

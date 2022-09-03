@@ -1,5 +1,6 @@
-%  5D seismic data denoising via the damped rank-reduction method
-%  
+% Demonstration script for
+% 3D seismic denoising via the optimally damped rank-reduction method
+%
 %  Copyright (C) 2022 The University of Texas at Austin
 %  Copyright (C) 2022 Yangkang Chen
 %
@@ -13,7 +14,7 @@
 %  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 %  GNU General Public License for more details: http://www.gnu.org/licenses/
 %
-%  References:   
+%  References:
 %
 %  [1] Bai et al., 2020, Seismic signal enhancement based on the lowrank methods, Geophysical Prospecting, 68, 2783-2807.
 %  [2] Chen et al., 2020, Five-dimensional seismic data reconstruction using the optimally damped rank-reduction method, Geophysical Journal International, 222, 1824-1845.
@@ -26,52 +27,70 @@
 
 clc;clear;close all;
 addpath(genpath('../matdrr'));
+%% generate synthetic data
+a1=zeros(300,20);
+[n,m]=size(a1);
+a3=a1;
+a4=a1;
 
-%% download and load data
-% https://github.com/aaspip/data/blob/main/yc_synth5d.mat
-load yc_synth5d.mat
-d=data5d;d=d/max(max(max(max(max(d)))));
-[nt,nhx,nhy,nx,ny]=size(d);
-dt=0.004;
-%% exploring the data
-%1) ploting CMP gather
-figure;drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
+k=0;
+a=0.1;
+b=1;
+for t=-0.055:0.002:0.055
+    k=k+1;
+    b1(k)=(1-2*(pi*30*t).^2).*exp(-(pi*30*t).^2);
+    b2(k)=(1-2*(pi*40*t).^2).*exp(-(pi*40*t).^2);
+    b3(k)=(1-2*(pi*40*t).^2).*exp(-(pi*40*t).^2);
+    b4(k)=(1-2*(pi*30*t).^2).*exp(-(pi*30*t).^2);
+end
+for i=1:m
+    t1(i)=round(140);
+    t3(i)=round(-6*i+180);
+    t4(i)=round(6*i+10);
+    a1(t1(i):t1(i)+k-1,i)=b1;
+    a3(t3(i):t3(i)+k-1,i)=b1;
+    a4(t4(i):t4(i)+k-1,i)=b1;
+end
 
-%2) ploting common offset gather
-figure;drr_imagesc(reshape(d(:,5,5,:,:),100,10*10));
-%% add noise
-randn('state',201516);
-dn=d+.2*randn(nt,nhx,nhy,nx,ny);
+temp=a1(1:300,:)+a3(1:300,:)+a4(1:300,:);
+for j=1:20
+    a4=zeros(300,20);
+    for i=1:m
+        t4(i)=round(6*i+10+3*j);
+        a4(t4(i):t4(i)+k-1,i)=b1;
+        
+        t1(i)=round(140-2*j);
+        a1(t1(i):t1(i)+k-1,i)=b1;
+    end
+    shot(:,:,j)=a1(1:300,:)+a3(1:300,:)+a4(1:300,:);
+end
+plane3d=shot;
+d=plane3d/max(max(max(plane3d)));
 
-figure;
-subplot(2,1,1);drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
-subplot(2,1,2);drr_imagesc(reshape(dn(:,:,:,1,1),100,10*10));
+%% adding noise
+randn('state',201314);
+var=0.2;
+dn=d+var*randn(size(d));
 
-%% denoise (Traditonal RR)
-flow=5;fhigh=100;dt=0.004;N=4;
-d1=drr5d(dn,flow,fhigh,dt,N,100,1);
-figure;
-subplot(3,1,1);drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
-subplot(3,1,2);drr_imagesc(reshape(dn(:,:,:,1,1),100,10*10));
-subplot(3,1,3);drr_imagesc(reshape(d1(:,:,:,1,1),100,10*10));
+%% denoise (RR)
+flow=0;fhigh=250;dt=0.004;N=6;verb=1;
+d1=drr3d(dn(:,:,:),flow,fhigh,dt,N,100,verb);
+figure;drr_imagesc([d(:,:,9),dn(:,:,9),d1(:,:,9),dn(:,:,9)-d1(:,:,9)]);caxis([-0.5,0.5]);
 
 %% denoise (DRR)
-flow=5;fhigh=100;dt=0.004;N=4;K=2;
-d2=drr5d(dn,flow,fhigh,dt,N,K,1);
-figure;
-subplot(3,1,1);drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
-subplot(3,1,2);drr_imagesc(reshape(dn(:,:,:,1,1),100,10*10));
-subplot(3,1,3);drr_imagesc(reshape(d2(:,:,:,1,1),100,10*10));
+flow=0;fhigh=250;dt=0.004;N=6;verb=1;K=3;
+d2=drr3d(dn(:,:,:),flow,fhigh,dt,N,K,verb);
+figure;drr_imagesc([d(:,:,9),dn(:,:,9),d2(:,:,9),dn(:,:,9)-d2(:,:,9)]);caxis([-0.5,0.5]);
 
-s0=reshape(d(:,:,:,1,1),100,10*10);
-sn=reshape(dn(:,:,:,1,1),100,10*10);
-s1=reshape(d1(:,:,:,1,1),100,10*10);
-s2=reshape(d2(:,:,:,1,1),100,10*10);
+%% denoise (ODRR)
+flow=0;fhigh=250;dt=0.004;N=6;verb=1;K=3;O=1;
+d3=odrr3d(dn(:,:,:),flow,fhigh,dt,N,K,O,verb);
+figure;drr_imagesc([d(:,:,9),dn(:,:,9),d3(:,:,9),dn(:,:,9)-d3(:,:,9)]);caxis([-0.5,0.5]);
 
-drr_snr(s0,sn) %-6.7209
-drr_snr(s0,s1) %16.5590
-drr_snr(s0,s2) %18.2507
-
+drr_snr(d,dn,2)
+drr_snr(d,d1,2)
+drr_snr(d,d2,2)
+drr_snr(d,d3,2)
 
 
 

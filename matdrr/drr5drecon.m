@@ -1,4 +1,4 @@
-function [ D1 ] = drr5drecon(D,MASK,flow,fhigh,dt,N,K,Niter,eps,verb,mode,iflb,a)
+function [ D1 ] = drr5drecon(D,MASK,flow,fhigh,dt,N,K,Niter,eps,verb,mode,a)
 %  DRR5DRECON: Damped rank-reduction method for 5D simultaneous denoising and reconstruction
 %
 %  IN   D:   	intput 5D data
@@ -7,15 +7,12 @@ function [ D1 ] = drr5drecon(D,MASK,flow,fhigh,dt,N,K,Niter,eps,verb,mode,iflb,a
 %       fhigh:  processing frequency range (higher)
 %       dt:     temporal sampling interval
 %       N:      number of singular value to be preserved
-%       K:     damping factor
+%       K:     damping factor (default: 4)
 %       Niter:  number of maximum iteration
 %       eps:    tolerence (||S(n)-S(n-1)||_F<eps*S(n))
 %       verb:   verbosity flag (default: 0)
 %       mode:   mode=1: denoising and reconstruction
 %               mode=0: reconstruction only
-%       iflb:   default 0;
-%               1: with LB, MGS orthogonalized
-%               0: traditional
 %       a:      scalar
 %
 %  OUT  D1:  	output data
@@ -53,11 +50,12 @@ if nargin==2
     fhigh=124;
     dt=0.004;
     N=1;
+    K=4;
     Niter=30;
     eps=0.00001;
     verb=0;
     mode=1;
-    iflb=0;
+    a=(Niter-(1:Niter))/(Niter-1); %linearly decreasing
 end;
 
 if mode==0;
@@ -105,12 +103,7 @@ for k=ilow:ihigh
     Sn_1=S_obs;
     for iter=1:Niter
         M=P_H(Sn_1,lx,ly,lhx,lhy);
-        if iflb~=1
-            M=P_R(M,N,iflb,K);
-        else
-            M=P_R(M,N,iflb);
-        end
-        
+        M=P_R(M,N,K);
         if 1==0 %for outputing the Hankel matrix for comparison
             if iter==1 && k==floor(ihigh/3);
                 M_irr=M;
@@ -194,41 +187,19 @@ end
 dout=r3o;
 return
 
-function [dout]=P_R(din,N,iflb,K)
+function [dout]=P_R(din,N,K)
 % Rank reduction on the block Hankel matrix
-[n1,n2]=size(din);
-switch iflb
-    case 0
-        if K~=Inf
-            %         [U,B,V]=svds(din,N+1); % a little bit slower for small matrix
-            %         [U,B,V]=svd(din); % a little bit slower for small matrix
-            
-            [U,B,V]=svds(din,N+1);
-            for j=1:N
-                B(j,j)=B(j,j)*(1-B(N+1,N+1)^K/(B(j,j)^K+0.000000000000001));
-            end
-            
-            %              dout=U*D*V';
-            % %
-            %         [U,B,V]=svd(din);
-            
-            dout=U(:,1:N)*B(1:N,1:N)*(V(:,1:N)');
-        else
-            %           [U,B,V]=svds(din,N);
-            [U,B,V]=svd(din);
-            dout=U(:,1:N)*B(1:N,1:N)*(V(:,1:N)');
-        end
-    case 1 %LB
-        [U,B,V]=yc_lb(din,randn(n1,1),N,1);
-        dout=U(:,1:N)*B(1:N,1:N)*(V(:,1:N)');
-    case 2 % use damped optshrink
-        dout=yc_optshrink_damp(din,N,K);
-    case 3 % use optshrink
-        dout=yc_optshrink(din,N);
-    otherwise
-        error('Invalid argument value.');
+
+
+%      [U,D,V]=svds(din,N); % a little bit slower for small matrix
+%      dout=U*D*V';
+% %
+[U,D,V]=svds(din,N+1);
+for j=1:N
+    D(j,j)=D(j,j)*(1-D(N+1,N+1)^K/(D(j,j)^K+0.000000000000001));
 end
 
+dout=U(:,1:N)*D(1:N,1:N)*(V(:,1:N)');
 
 return
 

@@ -1,20 +1,23 @@
-function [ D1 ] = drr3d(D,flow,fhigh,dt,N,K,verb)
-%  DRR3D: 3D damped rank-reduction method (or F-XY domain damped multichannel singular spectrum analysis)
+function [ D1 ] = odrr3d(D,flow,fhigh,dt,N,K,O,verb)
+%  ODRR3D: 3D optimally damped rank-reduction method (ODRR)
 %
 %  IN   D:   	 intput 3D data
 %       flow:   processing frequency range (lower)
 %       fhigh:  processing frequency range (higher)
 %       dt:     temporal sampling interval
 %       N:      number of singular value to be preserved
-%       K:     damping factor (default: 4)
+%       K:      damping factor
+%       O:	    ODRR flag; 0 for DRR and 1 for ODRR (default: 1)
 %       verb:   verbosity flag (default: 0)
 %
 %  OUT  D1:  	output data
 %
 %  Copyright (C) 2013 The University of Texas at Austin
 %  Copyright (C) 2013 Yangkang Chen
-%  Mofied 2015 by Yangkang Chen
-%
+%  Modified 2015 by Yangkang Chen
+%  Further modified by Yangkang Chen and Min Bai 2018-2020
+%  Finalized by Yangkang Chen 2022
+% 
 %  This program is free software: you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published
 %  by the Free Software Foundation, either version 3 of the License, or
@@ -27,11 +30,14 @@ function [ D1 ] = drr3d(D,flow,fhigh,dt,N,K,verb)
 %
 %  References:   
 %
-%  [1] Chen, Y., W. Huang, D. Zhang, W. Chen, 2016, An open-source matlab code package for improved rank-reduction 3D seismic data denoising and reconstruction, Computers & Geosciences, 95, 59-66.
-%  [2] Chen, Y., D. Zhang, Z. Jin, X. Chen, S. Zu, W. Huang, and S. Gan, 2016, Simultaneous denoising and reconstruction of 5D seismic data via damped rank-reduction method, Geophysical Journal International, 206, 1695-1717.
-%  [3] Huang, W., R. Wang, Y. Chen, H. Li, and S. Gan, 2016, Damped multichannel singular spectrum analysis for 3D random noise attenuation, Geophysics, 81, V261-V270.
-%  [4] Chen et al., 2017, Preserving the discontinuities in least-squares reverse time migration of simultaneous-source data, Geophysics, 82, S185-S196.
-%  [5] Chen et al., 2019, Obtaining free USArray data by multi-dimensional seismic reconstruction, Nature Communications, 10:4434.
+%  [1] Bai et al., 2020, Seismic signal enhancement based on the lowrank methods, Geophysical Prospecting, 68, 2783-2807.
+%  [2] Chen et al., 2020, Five-dimensional seismic data reconstruction using the optimally damped rank-reduction method, Geophysical Journal International, 222, 1824-1845.
+%  [3] Chen, Y., W. Huang, D. Zhang, W. Chen, 2016, An open-source matlab code package for improved rank-reduction 3D seismic data denoising and reconstruction, Computers & Geosciences, 95, 59-66.
+%  [4] Chen, Y., D. Zhang, Z. Jin, X. Chen, S. Zu, W. Huang, and S. Gan, 2016, Simultaneous denoising and reconstruction of 5D seismic data via damped rank-reduction method, Geophysical Journal International, 206, 1695-1717.
+%  [5] Huang, W., R. Wang, Y. Chen, H. Li, and S. Gan, 2016, Damped multichannel singular spectrum analysis for 3D random noise attenuation, Geophysics, 81, V261-V270.
+%  [6] Chen et al., 2017, Preserving the discontinuities in least-squares reverse time migration of simultaneous-source data, Geophysics, 82, S185-S196.
+%  [7] Chen et al., 2019, Obtaining free USArray data by multi-dimensional seismic reconstruction, Nature Communications, 10:4434.
+%  [8] Oboue et al., 2021, Robust damped rank-reduction method for simultaneous denoising and reconstruction of 5-D seismic data, Geophysics, 86, V71–V89.
 
 if nargin==0
     error('Input data must be provided!');
@@ -43,6 +49,7 @@ if nargin==1
     dt=0.004;
     N=1;
     K=4;
+    O=1;
     verb=0;
 end;
 
@@ -84,7 +91,12 @@ for k=ilow:ihigh
         M=P_H(squeeze(DATA_FX(k,:,:)),lx,ly);    
     end
     
+    if O==0
     M=P_RD(M,N,K);
+    else
+    M=P_ORD(M,N,K);
+    end
+    
     DATA_FX0(k,:,:)=P_A(M,nx,ny,lx,ly);
     
     if(mod(k,5)==0 && verb==1)
@@ -140,6 +152,13 @@ function [dout]=P_RD(din,N,K)
 
 return
 
+function [dout]=P_ORD(din,N,K)
+% Rank reduction on the block Hankel matrix
+
+     dout=drr_optshrink_damp(din,N,K);
+
+return
+
 function [dout]=P_A(din,nx,ny,lx,ly)
 % Averaging the block Hankel matrix to output the result
 lxx=nx-lx+1;
@@ -178,6 +197,9 @@ function [dout] =ave_antid(din);
 	  end
    end
 return
+
+
+
 
 
 

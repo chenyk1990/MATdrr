@@ -1,18 +1,22 @@
-function [ D1 ] = drr5d(D,flow,fhigh,dt,N,K,verb)
-%  DRR5D: Damped rank-reduction method for 5D denoising
+function [ D1 ] = odrr5d(D,flow,fhigh,dt,N,K,O,verb)
+%  DRR5D: Optimally damped rank-reduction method for 5D denoising
 %
 %  IN   D:   	intput 5D data
 %       flow:   processing frequency range (lower)
 %       fhigh:  processing frequency range (higher)
 %       dt:     temporal sampling interval
 %       N:      number of singular value to be preserved
-%       K:     damping factor (default: 4)
+%       K:      damping factor (default: 4)
+%       O:	    ODRR flag; 0 for DRR and 1 for ODRR (default: 1)
+%
 %       verb:   verbosity flag (default: 0)
 %
 %  OUT  D1:  	output data
 %
 %  Copyright (C) 2015 The University of Texas at Austin
 %  Copyright (C) 2015 Yangkang Chen
+%  Further modified by Yangkang Chen and Min Bai 2018-2020
+%  Finalized by Yangkang Chen 2022
 %
 %  This program is free software: you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published
@@ -24,7 +28,7 @@ function [ D1 ] = drr5d(D,flow,fhigh,dt,N,K,verb)
 %  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 %  GNU General Public License for more details: http://www.gnu.org/licenses/
 %
-%  References:   
+%  References:
 %
 %  [1] Bai et al., 2020, Seismic signal enhancement based on the lowrank methods, Geophysical Prospecting, 68, 2783-2807.
 %  [2] Chen et al., 2020, Five-dimensional seismic data reconstruction using the optimally damped rank-reduction method, Geophysical Journal International, 222, 1824-1845.
@@ -45,6 +49,7 @@ if nargin==1
     dt=0.004;
     N=1;
     K=4;
+    O=1;
     verb=0;
 end;
 
@@ -84,12 +89,16 @@ M=zeros(lx*ly*lhx*lhy,lxx*lyy*lhxx,lhyy);
 % main loop
 for k=ilow:ihigh
     if(ny==1 & nhx==1 & nhy==1)
-        M=P_H(DATA_FX(k,:,:,:,:).',lx,ly,lhx,lhy);      
+        M=P_H(DATA_FX(k,:,:,:,:).',lx,ly,lhx,lhy);
     else
-        M=P_H(squeeze(DATA_FX(k,:,:,:,:)),lx,ly,lhx,lhy);    
+        M=P_H(squeeze(DATA_FX(k,:,:,:,:)),lx,ly,lhx,lhy);
     end
     
-    M=P_R(M,N,K);
+    if O==0
+        M=P_R(M,N,K);
+    else
+        M=P_OR(M,N,K);
+    end
     
     DATA_FX0(k,:,:,:,:)=P_A(M,nx,ny,nhx,nhy,lx,ly,lhx,lhy);
     
@@ -163,16 +172,22 @@ function [dout]=P_R(din,N,K)
 
 %      [U,D,V]=svds(din,N); % a little bit slower for small matrix
 %      dout=U*D*V';
-% %      
-    [U,D,V]=svds(din,N+1);
-    for j=1:N
-        D(j,j)=D(j,j)*(1-D(N+1,N+1)^K/(D(j,j)^K+0.000000000000001));
-    end  
-    
-    dout=U(:,1:N)*D(1:N,1:N)*(V(:,1:N)');
+% %
+[U,D,V]=svds(din,N+1);
+for j=1:N
+    D(j,j)=D(j,j)*(1-D(N+1,N+1)^K/(D(j,j)^K+0.000000000000001));
+end
+
+dout=U(:,1:N)*D(1:N,1:N)*(V(:,1:N)');
 
 return
 
+function [dout]=P_OR(din,N,K)
+% Rank reduction on the block Hankel matrix
+
+dout=drr_optshrink_damp(din,N,K);
+
+return
 
 function [dout]=P_A(din,nx,ny,nhx,nhy,lx,ly,lhx,lhy)
 % Averaging the block Hankel matrix to output the result (5D version)
@@ -187,25 +202,25 @@ for ky=1:nhy
     r3o=zeros(lx*ly*lhx,lxx*lyy*lhxx);
     if ky<lhy
         for id=1:ky
-          r3o=r3o+din(1+(ky-1)*lx*ly*lhx-(id-1)*lx*ly*lhx:ky*lx*ly*lhx-(id-1)*lx*ly*lhx,1+(id-1)*lxx*lyy*lhxx:lxx*lyy*lhxx+(id-1)*lxx*lyy*lhxx)/ky;
+            r3o=r3o+din(1+(ky-1)*lx*ly*lhx-(id-1)*lx*ly*lhx:ky*lx*ly*lhx-(id-1)*lx*ly*lhx,1+(id-1)*lxx*lyy*lhxx:lxx*lyy*lhxx+(id-1)*lxx*lyy*lhxx)/ky;
         end
     else
         for id=1:(nhy-ky+1)
-          r3o=r3o+din((lhy-1)*lx*ly*lhx+1-(id-1)*lx*ly*lhx:lhy*lx*ly*lhx-(id-1)*lx*ly*lhx,(ky-lhy)*lxx*lyy*lhxx+1+(id-1)*lxx*lyy*lhxx:(ky-lhy+1)*lxx*lyy*lhxx+(id-1)*lxx*lyy*lhxx)/(nhy-ky+1);
+            r3o=r3o+din((lhy-1)*lx*ly*lhx+1-(id-1)*lx*ly*lhx:lhy*lx*ly*lhx-(id-1)*lx*ly*lhx,(ky-lhy)*lxx*lyy*lhxx+1+(id-1)*lxx*lyy*lhxx:(ky-lhy+1)*lxx*lyy*lhxx+(id-1)*lxx*lyy*lhxx)/(nhy-ky+1);
         end
-    end     
-    for kx=1:nhx  
-        r2o=zeros(lx*ly,lxx*lyy);        
+    end
+    for kx=1:nhx
+        r2o=zeros(lx*ly,lxx*lyy);
         if kx<lhx
             for id=1:kx
-               r2o=r2o+ r3o(1+(kx-1)*lx*ly-(id-1)*lx*ly:kx*lx*ly-(id-1)*lx*ly,1+(id-1)*lxx*lyy:lxx*lyy+(id-1)*lxx*lyy)/kx;
+                r2o=r2o+ r3o(1+(kx-1)*lx*ly-(id-1)*lx*ly:kx*lx*ly-(id-1)*lx*ly,1+(id-1)*lxx*lyy:lxx*lyy+(id-1)*lxx*lyy)/kx;
             end
         else
             for id=1:(nhx-kx+1)
-               r2o=r2o+ r3o((lhx-1)*lx*ly+1-(id-1)*lx*ly:lhx*lx*ly-(id-1)*lx*ly,(kx-lhx)*lxx*lyy+1+(id-1)*lxx*lyy:(kx-lhx+1)*lxx*lyy+(id-1)*lxx*lyy)/(nhx-kx+1);
+                r2o=r2o+ r3o((lhx-1)*lx*ly+1-(id-1)*lx*ly:lhx*lx*ly-(id-1)*lx*ly,(kx-lhx)*lxx*lyy+1+(id-1)*lxx*lyy:(kx-lhx+1)*lxx*lyy+(id-1)*lxx*lyy)/(nhx-kx+1);
             end
-        end          
-        for j=1:ny             
+        end
+        for j=1:ny
             if j<ly
                 for id=1:j
                     dout(:,j,kx,ky) =dout(:,j,kx,ky)+ ave_antid(r2o(1+(j-1)*lx-(id-1)*lx:j*lx-(id-1)*lx,1+(id-1)*lxx:lxx+(id-1)*lxx))/j;
@@ -215,7 +230,7 @@ for ky=1:nhy
                     dout(:,j,kx,ky) =dout(:,j,kx,ky)+ ave_antid(r2o((ly-1)*lx+1-(id-1)*lx:ly*lx-(id-1)*lx,(j-ly)*lxx+1+(id-1)*lxx:(j-ly+1)*lxx+(id-1)*lxx))/(ny-j+1);
                 end
             end
-        end      
+        end
     end
 end
 return
@@ -224,20 +239,20 @@ return
 function [dout] =ave_antid(din);
 % averaging along antidiagonals
 
-   [n1,n2]=size(din);
-   nout=n1+n2-1;
-   dout=zeros(nout,1);
-   for i=1:nout	
-       if i<n1
-          for id=1:i
-	  	    dout(i)=dout(i) + din(i-(id-1),1+(id-1))/i; 
-	  	end
-	  else
-          for id=1:nout+1-i
-	  	    dout(i)=dout(i) + din(n1-(id-1),1+(i-n1)+(id-1))/(nout+1-i); 
-	  	end	  
-	  end
-   end
+[n1,n2]=size(din);
+nout=n1+n2-1;
+dout=zeros(nout,1);
+for i=1:nout
+    if i<n1
+        for id=1:i
+            dout(i)=dout(i) + din(i-(id-1),1+(id-1))/i;
+        end
+    else
+        for id=1:nout+1-i
+            dout(i)=dout(i) + din(n1-(id-1),1+(i-n1)+(id-1))/(nout+1-i);
+        end
+    end
+end
 return
 
 

@@ -1,4 +1,4 @@
-%  5D seismic data denoising via the damped rank-reduction method
+%  5D seismic data denoising via the optimally damped rank-reduction method
 %  
 %  Copyright (C) 2022 The University of Texas at Austin
 %  Copyright (C) 2022 Yangkang Chen
@@ -30,49 +30,79 @@ addpath(genpath('../matdrr'));
 %% download and load data
 % https://github.com/aaspip/data/blob/main/yc_synth5d.mat
 load yc_synth5d.mat
+
 d=data5d;d=d/max(max(max(max(max(d)))));
 [nt,nhx,nhy,nx,ny]=size(d);
 dt=0.004;
+
 %% exploring the data
 %1) ploting CMP gather
 figure;drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
 
 %2) ploting common offset gather
 figure;drr_imagesc(reshape(d(:,5,5,:,:),100,10*10));
-%% add noise
-randn('state',201516);
-dn=d+.2*randn(nt,nhx,nhy,nx,ny);
+
+%% simultaneous denoising and reconstruction
+randn('state',201314);
+var=0.25;
+dn=d+var*randn(size(d));
+
+%% decimate
+[nt,nhx,nhy,nx,ny]=size(d);
+ratio=0.3;
+mask=drr_genmask(reshape(d,nt,nhx*nhy*nx*ny),ratio,'c',201415);
+mask=reshape(mask,nt,nhx,nhy,nx,ny);
+d0=dn.*mask;
+
+%% RR5D
+flow=1;fhigh=100;dt=0.004;N=6;Niter=10;mode=1;verb=1;
+a=(Niter-(1:Niter))/(Niter-1); %linearly decreasing
+d1=drr5drecon(d0,mask,flow,fhigh,dt,N,50,Niter,eps,verb,mode,a);
 
 figure;
-subplot(2,1,1);drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
-subplot(2,1,2);drr_imagesc(reshape(dn(:,:,:,1,1),100,10*10));
+subplot(3,1,1);drr_imagesc(reshape(d(:,:,:,1,1),nt,10*10));
+subplot(3,1,2);drr_imagesc(reshape(d0(:,:,:,1,1),nt,10*10));
+subplot(3,1,3);drr_imagesc(reshape(d1(:,:,:,1,1),nt,10*10));
 
-%% denoise (Traditonal RR)
-flow=5;fhigh=100;dt=0.004;N=4;
-d1=drr5d(dn,flow,fhigh,dt,N,100,1);
 figure;
-subplot(3,1,1);drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
-subplot(3,1,2);drr_imagesc(reshape(dn(:,:,:,1,1),100,10*10));
-subplot(3,1,3);drr_imagesc(reshape(d1(:,:,:,1,1),100,10*10));
+subplot(3,1,1);drr_imagesc(reshape(d(:,5,5,:,:),nt,10*10));
+subplot(3,1,2);drr_imagesc(reshape(d0(:,5,5,:,:),nt,10*10));
+subplot(3,1,3);drr_imagesc(reshape(d1(:,5,5,:,:),nt,10*10));
 
-%% denoise (DRR)
-flow=5;fhigh=100;dt=0.004;N=4;K=2;
-d2=drr5d(dn,flow,fhigh,dt,N,K,1);
+%% DRR5D
+flow=1;fhigh=100;dt=0.004;N=6;K=4;Niter=10;mode=1;verb=1;
+d2=drr5drecon(d0,mask,flow,fhigh,dt,N,K,Niter,eps,verb,mode,a);
+
 figure;
-subplot(3,1,1);drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
-subplot(3,1,2);drr_imagesc(reshape(dn(:,:,:,1,1),100,10*10));
-subplot(3,1,3);drr_imagesc(reshape(d2(:,:,:,1,1),100,10*10));
+subplot(3,1,1);drr_imagesc(reshape(d(:,:,:,1,1),nt,10*10));
+subplot(3,1,2);drr_imagesc(reshape(d0(:,:,:,1,1),nt,10*10));
+subplot(3,1,3);drr_imagesc(reshape(d2(:,:,:,1,1),nt,10*10));
 
-s0=reshape(d(:,:,:,1,1),100,10*10);
-sn=reshape(dn(:,:,:,1,1),100,10*10);
-s1=reshape(d1(:,:,:,1,1),100,10*10);
-s2=reshape(d2(:,:,:,1,1),100,10*10);
+figure;
+subplot(3,1,1);drr_imagesc(reshape(d(:,5,5,:,:),nt,10*10));caxis([-0.3,0.3]);
+subplot(3,1,2);drr_imagesc(reshape(d0(:,5,5,:,:),nt,10*10));caxis([-0.3,0.3]);
+subplot(3,1,3);drr_imagesc(reshape(d2(:,5,5,:,:),nt,10*10));caxis([-0.3,0.3]);
 
-drr_snr(s0,sn) %-6.7209
-drr_snr(s0,s1) %16.5590
-drr_snr(s0,s2) %18.2507
+%% ODRR5D
+flow=1;fhigh=100;dt=0.004;N=6;K=4;Niter=10;mode=1;verb=1;O=1;
+d3=odrr5drecon(d0,mask,flow,fhigh,dt,N,K,O,Niter,eps,verb,mode,a);
 
+figure;
+subplot(3,1,1);drr_imagesc(reshape(d(:,:,:,1,1),nt,10*10));
+subplot(3,1,2);drr_imagesc(reshape(d0(:,:,:,1,1),nt,10*10));
+subplot(3,1,3);drr_imagesc(reshape(d3(:,:,:,1,1),nt,10*10));
 
+figure;
+subplot(3,1,1);drr_imagesc(reshape(d(:,5,5,:,:),nt,10*10));caxis([-0.3,0.3]);
+subplot(3,1,2);drr_imagesc(reshape(d0(:,5,5,:,:),nt,10*10));caxis([-0.3,0.3]);
+subplot(3,1,3);drr_imagesc(reshape(d3(:,5,5,:,:),nt,10*10));caxis([-0.3,0.3]);
+
+%% calculate Signal-to-noise Ratio (SNR)
+drr_snr(d(:,:),dn(:,:)) %-8.6178
+drr_snr(d(:,:),d0(:,:)) %-4.5929
+drr_snr(d(:,:),d1(:,:)) %7.4525
+drr_snr(d(:,:),d2(:,:)) %10.5141
+drr_snr(d(:,:),d3(:,:)) %11.8747
 
 
 
