@@ -48,8 +48,7 @@ BibTeX:
 
 -----------
 ## Copyright
-    Initial version: Yangkang Chen (chenyk2016@gmail.com), 2021-2022
-	Later version: MATdrr developing team, 2022-present
+    MATdrr developing team, 2021-present
 -----------
 
 ## License
@@ -81,10 +80,13 @@ Each figure in the gallery directory corresponds to a DEMO script in the "demo" 
 
 -----------
 ## Naming criteria
-    drr3d_xxx.m corresponds to all functions.
+    drr3d_xxx.m corresponds to all functions in 3D.
+    drr5d_xxx.m corresponds to all functions in 5D.
+    odrr_xxx.m corresponds to all ODRR-related functions.
     drr_xxx.m corresponds to all subroutines.
     localxxx.m corresponds to key functions in local windows.
     test_xxx.m corresponds to all DEMO scripts that are runnable.
+    
     
 -----------
 ## Development
