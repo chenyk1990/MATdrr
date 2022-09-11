@@ -21,18 +21,14 @@ function [] = drr_plot3d(d3d,frames,z,x,y)
 % If you find this plotting function useful, please cite the following
 % paper to recognize the authors' credit, where this script was originally created.
 % 
-% Chen, Y., S. Fomel, and R. Abma. Joint deblending and source time inversion, 87(6), doi: 10.1190/geo2022-0149.1.
+% Chen, Y., S. Fomel, and R. Abma, 2022, Joint deblending and source time inversion, 88(1), WA27–WA35.
 % 
-
-
 
 % load data3ddb.mat
 data=d3d;
-% figure;drr_imagesc(data(:,:,60));
+% figure;yc_imagesc(data(:,:,60));
 
 % load data3ddb0.mat
-
-
 [nz,nx,ny]=size(d3d);
 % d=d3d;
 
@@ -74,10 +70,10 @@ dd=data;
 
 %shift data
 % d2=shiftdim(d,1);%fix d, the creation and plot are separated
-% d2=drr_transp(d2,12);
+% d2=yc_transp(d2,12);
 
 dd2=shiftdim(dd,1);%fix d, the creation and plot are separated
-dd2=drr_transp(dd2,12);
+dd2=yc_transp(dd2,12);
 
 
 [x2,y2,z2]=meshgrid(x,y,z);
@@ -124,12 +120,88 @@ zlabel('Z','Fontsize',16,'fontweight','bold');
 set(gca,'Linewidth',2,'Fontsize',16,'Fontweight','normal');
 
 
-
-
 return
 
 function [map]=cseis()
 
 map = [[0.5*ones(1,40),linspace(0.5,1,88),linspace(1,0,88),zeros(1,40)]',[0.25*ones(1,40),linspace(0.25,1,88),linspace(1,0,88),zeros(1,40)]',[zeros(1,40),linspace(0.,1,88),linspace(1,0,88),zeros(1,40)]'];
+
+return
+
+function [dout]=drr_transp(din,plane)
+% drr_transp: Transpose two axes in a dataset
+% by Yangkang Chen, Dec 18, 2019
+% Modified on Jan, 2020
+% 
+% INPUT
+% din: input dataset
+% plane: Two-digit number with axes to transpose. The default is 12
+% OUTPUT
+% dout: output dataset
+%
+% DEMO:
+% a=magic(3);b=reshape(a,3,1,3);c=yc_transp(b,23);norm(a-c)
+
+if nargin==1
+    plane=12;
+end
+
+[n1,n2,n3,n4,n5]=size(din);
+
+switch plane
+    
+    case 12
+        dout=zeros(n2,n1,n3,n4,n5);
+        
+        for i5=1:n5
+            for i4=1:n4
+                for i3=1:n3
+                    dout(:,:,i3,i4,i5)=din(:,:,i3,i4,i5).';
+                end
+            end
+        end
+        
+    case 23
+        dout=zeros(n1,n3,n2,n4,n5);
+        for i5=1:n5
+            for i4=1:n4
+                for i1=1:n1
+                    dout(i1,:,:,i4,i5)=squeeze(din(i1,:,:,i4,i5)).';
+                end
+            end
+        end
+    case 13
+        dout=zeros(n3,n2,n1,n4,n5);
+        for i5=1:n5
+            for i4=1:n4
+                for i2=1:n2
+                    dout(:,i2,:,i4,i5)=squeeze(din(:,i2,:,i4,i5)).';
+                end
+            end
+        end
+        
+     case 14
+        dout=zeros(n4,n2,n3,n1,n5);
+        for i5=1:n5
+            for i3=1:n3
+                for i2=1:n2
+                    dout(:,i2,i3,:,i5)=squeeze(din(:,i2,i3,:,i5)).';
+                end
+            end
+        end
+        
+     case 15
+        dout=zeros(n5,n2,n3,n4,n1);
+        for i4=1:n4
+            for i3=1:n3
+                for i2=1:n2
+                    dout(:,i2,i3,i4,:)=squeeze(din(:,i2,i3,i4,:)).';
+                end
+            end
+        end        
+        
+    otherwise
+        error('Invalid argument value.');
+end
 
 return
