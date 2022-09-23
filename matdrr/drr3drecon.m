@@ -31,7 +31,7 @@ function [ D1 ] = drr3drecon(D,MASK,flow,fhigh,dt,N,K,Niter,eps,verb,mode,a)
 %  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 %  GNU General Public License for more details: http://www.gnu.org/licenses/
 %
-%  References:   
+%  References:
 %
 %  [1] Chen, Y., W. Huang, D. Zhang, W. Chen, 2016, An open-source matlab code package for improved rank-reduction 3D seismic data denoising and reconstruction, Computers & Geosciences, 95, 59-66.
 %  [2] Chen, Y., D. Zhang, Z. Jin, X. Chen, S. Zu, W. Huang, and S. Gan, 2016, Simultaneous denoising and reconstruction of 5D seismic data via damped rank-reduction method, Geophysical Journal International, 206, 1695-1717.
@@ -64,10 +64,17 @@ if mode==0;
     a=ones(1,Niter);
 end
 
-mask=squeeze(MASK(1,:,:));
+
+
 
 [nt,nx,ny]=size(D);
 D1=zeros(nt,nx,ny);
+
+if(ny==1)
+    mask=MASK(1,:,:).';
+else
+    mask=squeeze(MASK(1,:,:));
+end
 
 nf=2^nextpow2(nt);
 
@@ -97,14 +104,19 @@ M=zeros(lx*ly,lxx*lyy);
 % main loop
 for k=ilow:ihigh
     
-    S_obs=squeeze(DATA_FX(k,:,:));
+    %     S_obs=squeeze(DATA_FX(k,:,:));
+    
+    if(ny==1)
+        S_obs=DATA_FX(k,:,:).';
+    else
+        S_obs=squeeze(DATA_FX(k,:,:));
+    end
+    
     Sn_1=S_obs;
     for iter=1:Niter
-        
         M=P_H(Sn_1,lx,ly);
         M=P_RD(M,N,K);
         Sn=P_A(M,nx,ny,lx,ly);
-        
         Sn=a(iter)*S_obs+(1-a(iter))*mask.*Sn+(1-mask).*Sn;
         if norm(Sn-Sn_1,'fro')<eps
             break;
@@ -135,6 +147,7 @@ return
 
 function [dout]=P_H(din,lx,ly)
 % forming block Hankel matrix
+% size(din)
 [nx,ny]=size(din);
 lxx=nx-lx+1;
 lyy=ny-ly+1;
@@ -159,13 +172,13 @@ function [dout]=P_RD(din,N,K)
 
 %      [U,D,V]=svds(din,N); % a little bit slower for small matrix
 %      dout=U*D*V';
-% %      
-    [U,D,V]=svd(din);
-    for j=1:N
-        D(j,j)=D(j,j)*(1-D(N+1,N+1)^K/(D(j,j)^K+0.000000000000001));
-    end    
-    
-    dout=U(:,1:N)*D(1:N,1:N)*(V(:,1:N)');
+% %
+[U,D,V]=svd(din);
+for j=1:N
+    D(j,j)=D(j,j)*(1-D(N+1,N+1)^K/(D(j,j)^K+0.000000000000001));
+end
+
+dout=U(:,1:N)*D(1:N,1:N)*(V(:,1:N)');
 
 return
 

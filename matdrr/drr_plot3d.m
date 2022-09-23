@@ -70,10 +70,10 @@ dd=data;
 
 %shift data
 % d2=shiftdim(d,1);%fix d, the creation and plot are separated
-% d2=yc_transp(d2,12);
+% d2=drr_transp(d2,12);
 
 dd2=shiftdim(dd,1);%fix d, the creation and plot are separated
-dd2=yc_transp(dd2,12);
+dd2=drr_transp(dd2,12);
 
 
 [x2,y2,z2]=meshgrid(x,y,z);
@@ -140,7 +140,7 @@ function [dout]=drr_transp(din,plane)
 % dout: output dataset
 %
 % DEMO:
-% a=magic(3);b=reshape(a,3,1,3);c=yc_transp(b,23);norm(a-c)
+% a=magic(3);b=reshape(a,3,1,3);c=drr_transp(b,23);norm(a-c)
 
 if nargin==1
     plane=12;
