@@ -48,7 +48,7 @@ BibTeX:
 
 -----------
 ## Copyright
-    MATdrr developing team, 2021-present
+    MATdrr developing team, 2013-present
 -----------
 
 ## License
