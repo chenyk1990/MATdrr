@@ -67,12 +67,6 @@ Using the latest version
 -----------
 ## Examples
     The "demo" directory contains all runable scripts to demonstrate different applications of MATdrr. 
-    
------------
-## Gallery
-The gallery figures of the MATdrr package can be found at
-    https://github.com/chenyk1990/gallery/tree/main/matdrr
-Each figure in the gallery directory corresponds to a DEMO script in the "demo" directory with the exactly the same file name.
 
 -----------
 ## Dependence Packages
@@ -100,5 +94,25 @@ Each figure in the gallery directory corresponds to a DEMO script in the "demo" 
     chenyk2016@gmail.com
 
 -----------
+## Gallery
+The gallery figures of the MATdrr package can be found at
+    https://github.com/chenyk1990/gallery/tree/main/matdrr
+Each figure in the gallery directory corresponds to a DEMO script in the "demo" directory with the exactly the same file name.
+
+The following figure shows a 2D localized denoising example using the MATdrr package. 
+<img src='https://github.com/chenyk1990/gallery/blob/main/matdrr/test_matdrr_drr2d_win.png' alt='comp' width=960/>
+
+The following figure shows a 2D diffraction separation example using the MATdrr package. 
+<img src='https://github.com/chenyk1990/gallery/blob/main/matdrr/test_matdrr_drr2d_diffraction.png' alt='comp' width=960/>
+
+The following figure shows a 3D diffraction separation example using the MATdrr package. 
+<img src='https://github.com/chenyk1990/gallery/blob/main/matdrr/test_matdrr_drr3d_diffraction.png' alt='comp' width=960/>
+
+The following figure shows a 3D seismic reconstruction example on the USArray data using the MATdrr package. 
+<img src='https://github.com/chenyk1990/gallery/blob/main/matdrr/test_matdrr_drr3drecon_usarray.png' alt='comp' width=960/>
+
+
+
+
 
 
