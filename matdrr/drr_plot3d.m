@@ -114,6 +114,11 @@ plot3(x(f2)*ones(ny,1),y,z0(1)*ones(ny,1),'b-','linewidth',2);
 plot3(x0(2)*ones(nz,1),y(f3)*ones(nz,1),z,'b-','linewidth',2);
 plot3(x,y(f3)*ones(nx,1),z0(1)*ones(nx,1),'b-','linewidth',2);
 
+
+xlim([min(x),max(x)]);
+ylim([min(y),max(y)]);
+zlim([min(z),max(z)]);
+
 ylabel('Y','Fontsize',16,'fontweight','bold');
 xlabel('X','Fontsize',16,'fontweight','bold');
 zlabel('Z','Fontsize',16,'fontweight','bold');
