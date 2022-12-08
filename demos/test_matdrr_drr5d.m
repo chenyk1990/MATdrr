@@ -48,7 +48,7 @@ subplot(2,1,1);drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
 subplot(2,1,2);drr_imagesc(reshape(dn(:,:,:,1,1),100,10*10));
 
 %% denoise (Traditonal RR)
-flow=5;fhigh=100;dt=0.004;N=4;
+flow=5;fhigh=100;dt=0.004;N=6;
 d1=drr5d(dn,flow,fhigh,dt,N,100,1);
 figure;
 subplot(3,1,1);drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
@@ -56,23 +56,35 @@ subplot(3,1,2);drr_imagesc(reshape(dn(:,:,:,1,1),100,10*10));
 subplot(3,1,3);drr_imagesc(reshape(d1(:,:,:,1,1),100,10*10));
 
 %% denoise (DRR)
-flow=5;fhigh=100;dt=0.004;N=4;K=2;
+flow=5;fhigh=100;dt=0.004;N=6;K=2;
 d2=drr5d(dn,flow,fhigh,dt,N,K,1);
-figure;
-subplot(3,1,1);drr_imagesc(reshape(d(:,:,:,1,1),100,10*10));
-subplot(3,1,2);drr_imagesc(reshape(dn(:,:,:,1,1),100,10*10));
-subplot(3,1,3);drr_imagesc(reshape(d2(:,:,:,1,1),100,10*10));
 
 s0=reshape(d(:,:,:,1,1),100,10*10);
 sn=reshape(dn(:,:,:,1,1),100,10*10);
 s1=reshape(d1(:,:,:,1,1),100,10*10);
 s2=reshape(d2(:,:,:,1,1),100,10*10);
 
-drr_snr(s0,sn) %-6.7209
-drr_snr(s0,s1) %16.5590
-drr_snr(s0,s2) %18.2507
+snrn=drr_snr(s0,sn) %-6.7209
+snr1=drr_snr(s0,s1) %14.7428
+snr2=drr_snr(s0,s2) %18.3155
 
+snrnn=drr_snr(d(:,:),dn(:,:)) %-6.6662
+snr11=drr_snr(d(:,:),d1(:,:)) %15.6600
+snr22=drr_snr(d(:,:),d2(:,:)) %18.8509
 
+t=[0:100-1]*0.004;
 
+figure('units','normalized','Position',[0.2 0.4 0.8, 0.7],'color','w');
+subplot(4,2,1);drr_imagesc(reshape(d(:,:,:,1,1),100,10*10),0.5,2,1:100,t);xlabel('Offset trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('Clean'),'Fontsize',15,'fontweight','normal');
+subplot(4,2,3);drr_imagesc(reshape(dn(:,:,:,1,1),100,10*10),0.5,2,1:100,t);xlabel('Offset trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('Noisy (SNR=',num2str(snrn),' dB )'),'Fontsize',15,'fontweight','normal');
+subplot(4,2,5);drr_imagesc(reshape(d1(:,:,:,1,1),100,10*10),0.5,2,1:100,t);xlabel('Offset trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('RR (SNR=',num2str(snr1),' dB )'),'Fontsize',15,'fontweight','normal');
+subplot(4,2,7);drr_imagesc(reshape(d2(:,:,:,1,1),100,10*10),0.5,2,1:100,t);xlabel('Offset trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('DRR (SNR=',num2str(snr2),' dB )'),'Fontsize',15,'fontweight','normal');
+
+subplot(4,2,2);drr_imagesc(reshape(d(:,5,5,:,:),100,10*10),0.5,2,1:100,t);xlabel('Midpoint trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('Clean'),'Fontsize',15,'fontweight','normal');
+subplot(4,2,4);drr_imagesc(reshape(dn(:,5,5,:,:),100,10*10),0.5,2,1:100,t);xlabel('Midpoint trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('Noisy (SNR=',num2str(snrnn),' dB )'),'Fontsize',15,'fontweight','normal');
+subplot(4,2,6);drr_imagesc(reshape(d1(:,5,5,:,:),100,10*10),0.5,2,1:100,t);xlabel('Midpoint trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('RR (SNR=',num2str(snr11),' dB )'),'Fontsize',15,'fontweight','normal');
+subplot(4,2,8);drr_imagesc(reshape(d2(:,5,5,:,:),100,10*10),0.5,2,1:100,t);xlabel('Midpoint trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('DRR (SNR=',num2str(snr22),' dB )'),'Fontsize',15,'fontweight','normal');
+
+print(gcf,'-dpng','-r300','test_matdrr_drr5d.png');
 
 
