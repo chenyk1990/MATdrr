@@ -135,7 +135,7 @@ snr3=drr_snr(d,d3,2) %ODRR method
 %d2: 4.9273
 %d3: 7.4988
 
-
+t=[0:300-1]*0.004;
 figure('units','normalized','Position',[0.2 0.4 0.4, 1],'color','w');
 subplot(6,1,1);drr_imagesc(d(:,:),0.1,2,1:400,t);xlabel('Trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('Clean'),'Fontsize',15,'fontweight','normal');
 subplot(6,1,2);drr_imagesc(dn(:,:),0.1,2,1:400,t);xlabel('Trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('Noisy (SNR=',num2str(snrn),' dB )'),'Fontsize',15,'fontweight','normal');
