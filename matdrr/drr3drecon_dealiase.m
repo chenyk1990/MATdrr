@@ -11,7 +11,7 @@ function [ D1 ] = drr3drecon_dealiase(D,flow,fhigh,dt,N,K,Niter,a,lambda,verb)
 %       K:     damping factor (default: 4)
 %       Niter:  number of maximum iteration
 %       a:      interpolation interval
-%       lambda: 
+%       lambda: parameter to control the increasing rate of the weighting
 %       verb:   verbosity flag (default: 0)
 %
 %  OUT  D1:  	output data
@@ -30,7 +30,8 @@ function [ D1 ] = drr3drecon_dealiase(D,flow,fhigh,dt,N,K,Niter,a,lambda,verb)
 %  GNU General Public License for more details: http://www.gnu.org/licenses/
 %
 %  References:
-%
+%  
+%  [0] Huang, W., D. Feng, and Y. Chen, 2020, De‐aliased and de‐noise Cadzow filtering for seismic data reconstruction, Geophysical Prospecting, 68, 443-571.
 %  [1] Chen, Y., W. Huang, D. Zhang, W. Chen, 2016, An open-source matlab code package for improved rank-reduction 3D seismic data denoising and reconstruction, Computers & Geosciences, 95, 59-66.
 %  [2] Chen, Y., D. Zhang, Z. Jin, X. Chen, S. Zu, W. Huang, and S. Gan, 2016, Simultaneous denoising and reconstruction of 5D seismic data via damped rank-reduction method, Geophysical Journal International, 206, 1695-1717.
 %  [3] Huang, W., R. Wang, Y. Chen, H. Li, and S. Gan, 2016, Damped multichannel singular spectrum analysis for 3D random noise attenuation, Geophysics, 81, V261-V270.
@@ -52,10 +53,9 @@ if nargin==2
     N=1;
     K=4;
     Niter=30;
-    eps=0.00001;
+    a=2;
+    lambda=2;
     verb=0;
-    mode=1;
-    a=(Niter-(1:Niter))/(Niter-1); %linearly decreasing
 end;
 
 [nt,nx,ny]=size(D);
@@ -110,27 +110,12 @@ end
 % main loop
 for k=ilow:ihigh
     
-    %     S_obs=squeeze(DATA_FX(k,:,:));
     fa_re=zeros(ny,nx);
     i_low=round(k/a);
     temp_low=DATA_FX(i_low,:,:);
     fa_low=reshape(temp_low,[nx,ny]);
     fa_low=fa_low';
-%     if(ny==1)
-%         S_obs=DATA_FX(k,:,:).';
-%     else
-%         S_obs=squeeze(DATA_FX(k,:,:));
-%     end
-%     fa_low=S_obs;
-
-%     size(fa_low)
-%     A_low=h_hankel(fa_low,lx,ly);
-%     size(A_low)
-%     [lx,ly]
     A_low=P_H(fa_low.',lx,ly).';
-%     size(A_low2)
-%     norm(A_low-A_low2)
-%     [size(A_low),size(A_low2)]
     [U_low,S_low,V_low]=svd(A_low);
 
     temp=DATA_FX(k,:,:);
@@ -140,31 +125,14 @@ for k=ilow:ihigh
     fa_new=G2*fa_new1;
     fa_iter=fa_new;
     
-%     Sn_1=S_obs;
     for iter=1:Niter
-%         size(fa_iter)
-%         [lx2,ly2]
         A=h_hankel(fa_iter,lx2,ly2);
-%         size(A)
-%         A2=P_H(fa_iter.',lx2,ly2,20,10).';
-%         size(A2)
-%         norm(A-A2)
-%         M=P_RD(M,N,K);
         M=U_low(:,1:K)*U_low(:,1:K)'*A;
-%         [1,size(M,1),size(M,2)]
-%         Sn=P_A(M,nx,ny,lx,ly);
-%         Sn=P_A(M,nx*a,ny*a,lx2,ly2);
         fa=anti_Hankel_2(M,lx2,lxx,ly2,lyy,nx*a,ny*a);
-%         [3,lx2,ly2]
-%         fa2=P_A(M,ny*2,nx*2,ly2,lx2);
-%         size(fa)
         fa_re=fa;
-
-%         Sn=a(iter)*S_obs+(1-a(iter))*mask.*Sn+(1-mask).*Sn;
         for alj=1:a:ny*a
             for ali=1:a:nx*a
                 fa_re(alj,ali)=0;
-                %   fa_re(:,ali)=fa(:,1+(ali-1)*a);
             end
         end
 
@@ -175,10 +143,7 @@ for k=ilow:ihigh
         end
         fa_iter=(ra)*(fa-fa_re)+(1-ra)*fa_new+fa_re;
     end
-    
-%     for j=1:ny
-%         DATA_FX0(k,:,j) = DATA_FX0(k,:,j)+reshape(Sn(:,j),1,nx);
-%     end
+
     DATA_FX0(k,:,:)=reshape(fa_iter',[1,nx*a,ny*a]);
 
     if(mod(k,5)==0 && verb==1)
