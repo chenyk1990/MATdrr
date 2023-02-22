@@ -7,7 +7,7 @@ function [] = drr_imagesc(data,pclip,mode,x,z)
 % Input:
 %   data: input data
 %   pclip: clip value (percential or exact)
-%   mode=1? pclip; mode=2: clip
+%   mode=1: pclip; mode=2: clip
 %
 if nargin==1
     pclip=99;

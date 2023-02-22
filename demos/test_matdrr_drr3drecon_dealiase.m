@@ -90,13 +90,13 @@ y=[1:n3]*dy;
 x=[1:n2]*dx;
 z=[1:n1]*dt;
 figure('units','normalized','Position',[0.2 0.4 0.8, 0.6],'color','w');
-subplot(1,2,1);drr_plot3d(dn,[100,5,5],zz,xx,yy);caxis([-0.5,0.5]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('Raw','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
-subplot(1,2,2);drr_plot3d(d3,[100,10,10],z,x,y);caxis([-0.5,0.5]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('Densified','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
+subplot(1,2,1);drr_plot3d(dn,[100,5,5],zz,xx,yy);caxis([-0.5,0.5]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('Raw','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-2.5,-2.5, -0.3,'a)','color','k','Fontsize',40,'fontweight','bold','HorizontalAlignment','left');
+subplot(1,2,2);drr_plot3d(d3,[100,10,10],z,x,y);caxis([-0.5,0.5]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('Densified','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-5,-5, -0.3,'b)','color','k','Fontsize',40,'fontweight','bold','HorizontalAlignment','left');
 
 % subplot(3,2,5);drr_plot3d(diffr1,[100,10,10],z,x,y);caxis([-0.5,0.5]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('LDRR diffraction','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
 % subplot(3,2,6);drr_plot3d(data-diffr,[100,10,10],z,x,y);caxis([-0.5,0.5]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('LDRR reflection','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
 print(gcf,'-dpng','-r300','test_matdrr_drr3drecon_dealiase.png');
-print(gcf,'-deps','-r300','test_matdrr_drr3drecon_dealiase.eps');
+print(gcf,'-depsc','-r200','test_matdrr_drr3drecon_dealiase.eps');
 
 
 
