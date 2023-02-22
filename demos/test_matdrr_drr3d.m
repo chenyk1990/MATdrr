@@ -72,12 +72,12 @@ dn=d+var*randn(size(d));
 %% denoise (RR)
 flow=0;fhigh=250;dt=0.004;N=3;verb=1;
 d1=drr3d(dn(:,:,:),flow,fhigh,dt,N,100,verb);
-figure;drr_imagesc([d(:,:,9),dn(:,:,9),d1(:,:,9),dn(:,:,9)-d1(:,:,9)]);caxis([-0.4,0.4]);
+% figure;drr_imagesc([d(:,:,9),dn(:,:,9),d1(:,:,9),dn(:,:,9)-d1(:,:,9)]);caxis([-0.4,0.4]);
 
 %% denoise (DRR)
 flow=0;fhigh=250;dt=0.004;N=3;verb=1;K=3;
 d2=drr3d(dn(:,:,:),flow,fhigh,dt,N,K,verb);
-figure;drr_imagesc([d(:,:,9),dn(:,:,9),d2(:,:,9),dn(:,:,9)-d2(:,:,9)]);caxis([-0.4,0.4]);
+% figure;drr_imagesc([d(:,:,9),dn(:,:,9),d2(:,:,9),dn(:,:,9)-d2(:,:,9)]);caxis([-0.4,0.4]);
 
 s0=drr_snr(d,dn,2);
 s1=drr_snr(d,d1,2);
@@ -89,15 +89,17 @@ dy=1;dx=1;dt=0.004;
 y=[1:n3]*dy;
 x=[1:n2]*dx;
 z=[1:n1]*dt;
-figure('units','normalized','Position',[0.2 0.4 0.8, 0.3],'color','w');
-subplot(1,3,1);drr_plot3d(dn,[100,10,10],z,x,y);caxis([-0.4,0.4]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title(strcat('Noisy (SNR=',num2str(s0),' dB )'),'Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
-subplot(1,3,2);drr_plot3d(d1,[100,10,10],z,x,y);caxis([-0.4,0.4]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title(strcat('RR (SNR=',num2str(s1),' dB)'),'Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
-subplot(1,3,3);drr_plot3d(d2,[100,10,10],z,x,y);caxis([-0.4,0.4]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title(strcat('DRR (SNR=',num2str(s2),' dB)'),'Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
+figure('units','normalized','Position',[0.2 0.4 0.8, 0.6],'color','w');
+subplot(2,3,1);drr_plot3d(dn,[100,10,10],z,x,y);caxis([-0.4,0.4]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title(strcat('Noisy (SNR=',num2str(s0),' dB )'),'Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-0.5,-0.2, -0.3,'a)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
+subplot(2,3,2);drr_plot3d(d1,[100,10,10],z,x,y);caxis([-0.4,0.4]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title(strcat('RR (SNR=',num2str(s1),' dB)'),'Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-0.5,-0.2, -0.3,'b)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
+subplot(2,3,3);drr_plot3d(d2,[100,10,10],z,x,y);caxis([-0.4,0.4]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title(strcat('DRR (SNR=',num2str(s2),' dB)'),'Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-0.5,-0.2, -0.3,'c)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
+subplot(2,3,5);drr_plot3d(dn-d1,[100,10,10],z,x,y);caxis([-0.4,0.4]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title(strcat('Noise of RR'),'Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-0.5,-0.2, -0.3,'d)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
+subplot(2,3,6);drr_plot3d(dn-d2,[100,10,10],z,x,y);caxis([-0.4,0.4]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title(strcat('Noise of DRR'),'Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-0.5,-0.2, -0.3,'e)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
 
 % subplot(3,2,5);drr_plot3d(diffr1,[100,10,10],z,x,y);caxis([-0.4,0.4]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('LDRR diffraction','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
 % subplot(3,2,6);drr_plot3d(data-diffr,[100,10,10],z,x,y);caxis([-0.4,0.4]);xlabel('X (sample)','Fontsize',15);ylabel('Y (sample)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('LDRR reflection','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
 print(gcf,'-dpng','-r300','test_matdrr_drr3d.png');
-
+print(gcf,'-depsc','-r200','test_matdrr_drr3d.eps');
 
 
 

@@ -56,11 +56,11 @@ y=[0:n3-1]*dy;
 x=[0:n2-1]*dx;
 z=[0:n1-1]*dt;
 figure('units','normalized','Position',[0.2 0.4 0.5, 0.8],'color','w');
-subplot(3,2,1);drr_plot3d(data,[100,20,20],z,x,y);caxis([-0.5,0.5]);xlabel('X (km)','Fontsize',15);ylabel('Y (km)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('Data','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
-subplot(3,2,3);drr_plot3d(diffr,[100,20,20],z,x,y);caxis([-0.5,0.5]);xlabel('X (km)','Fontsize',15);ylabel('Y (km)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('Ground-truth diffraction','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
-subplot(3,2,4);drr_plot3d(data-diffr,[100,20,20],z,x,y);caxis([-0.5,0.5]);xlabel('X (km)','Fontsize',15);ylabel('Y (km)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('Ground-truth reflection','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
-subplot(3,2,5);drr_plot3d(diffr1,[100,20,20],z,x,y);caxis([-0.5,0.5]);xlabel('X (km)','Fontsize',15);ylabel('Y (km)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('LDRR diffraction','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
-subplot(3,2,6);drr_plot3d(data-diffr,[100,20,20],z,x,y);caxis([-0.5,0.5]);xlabel('X (km)','Fontsize',15);ylabel('Y (km)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('LDRR reflection','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
+subplot(3,2,1);drr_plot3d(data,[100,20,20],z,x,y);caxis([-0.5,0.5]);xlabel('X (km)','Fontsize',15);ylabel('Y (km)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('Data','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-0.5,-0.2, -0.3,'a)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
+subplot(3,2,3);drr_plot3d(diffr,[100,20,20],z,x,y);caxis([-0.5,0.5]);xlabel('X (km)','Fontsize',15);ylabel('Y (km)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('Ground-truth diffraction','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-0.5,-0.2, -0.3,'b)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
+subplot(3,2,4);drr_plot3d(data-diffr,[100,20,20],z,x,y);caxis([-0.5,0.5]);xlabel('X (km)','Fontsize',15);ylabel('Y (km)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('Ground-truth reflection','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-0.5,-0.2, -0.3,'c)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
+subplot(3,2,5);drr_plot3d(diffr1,[100,20,20],z,x,y);caxis([-0.5,0.5]);xlabel('X (km)','Fontsize',15);ylabel('Y (km)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('LDRR diffraction','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-0.5,-0.2, -0.3,'d)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
+subplot(3,2,6);drr_plot3d(data-diffr,[100,20,20],z,x,y);caxis([-0.5,0.5]);xlabel('X (km)','Fontsize',15);ylabel('Y (km)','Fontsize',15);zlabel('Time (s)','Fontsize',15);title('LDRR reflection','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-0.5,-0.2, -0.3,'e)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
 print(gcf,'-dpng','-r300','test_matdrr_drr3d_diffraction.png');
-
+print(gcf,'-depsc','-r300','test_matdrr_drr3d_diffraction.eps');
 

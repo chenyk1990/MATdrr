@@ -118,6 +118,7 @@ ylim([31.5,50.2]);
 ylabel('Latitude (^o)','Fontsize',20);
 xlabel('Time (s)','Fontsize',20);
 title('Raw','Fontsize',20);
+text(-1400,53,'a)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
 
 subplot(2,3,2);
 dtest=squeeze(d1(:,ilon,:));
@@ -126,6 +127,7 @@ ylim([31.5,50.2]);
 ylabel('Latitude (^o)','Fontsize',20);
 xlabel('Time (s)','Fontsize',20);
 title('Global','Fontsize',20);
+text(-1400,53,'b)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
 
 subplot(2,3,3);
 dtest=squeeze(d2(:,ilon,:));
@@ -134,6 +136,7 @@ ylim([31.5,50.2]);
 ylabel('Latitude (^o)','Fontsize',20);
 xlabel('Time (s)','Fontsize',20);
 title('Local','Fontsize',20);
+text(-1400,53,'c)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
 
 
 %% zoomed comparison
@@ -144,6 +147,7 @@ ylim([37,39]);xlim([500,1400]);
 ylabel('Latitude (^o)','Fontsize',20);
 xlabel('Time (s)','Fontsize',20);
 title('Raw','Fontsize',20);
+text(350,39.2,'d)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
 % print(gcf,'-depsc','-r400','us_lon1_z.eps');  
 
 subplot(2,3,5);
@@ -153,6 +157,7 @@ ylim([37,39]);xlim([500,1400]);
 ylabel('Latitude (^o)','Fontsize',20);
 xlabel('Time (s)','Fontsize',20);
 title('Global','Fontsize',20);
+text(350,39.2,'e)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
 % print(gcf,'-depsc','-r400','us_lon2_z.eps');  
 
 subplot(2,3,6);
@@ -161,6 +166,7 @@ drr_wigbh(dtest2,stla1(8:12,1),t(1088:2587),8);
 ylim([37,39]);xlim([500,1400]);
 ylabel('Latitude (^o)','Fontsize',20);
 xlabel('Time (s)','Fontsize',20);
+text(350,39.2,'f)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
 title('Local','Fontsize',20);
 
 
@@ -353,6 +359,6 @@ annotation(gcf,'line',[0.825 0.811805555555556],...
     'LineStyle','--');
 
 print(gcf,'-dpng','-r300','test_matdrr_drr3drecon_usarray.png');
-
+print(gcf,'-depsc','-r200','test_matdrr_drr3drecon_usarray.eps');
 
 

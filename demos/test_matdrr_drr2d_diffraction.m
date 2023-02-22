@@ -56,11 +56,10 @@ drr_snr(diffr,diffr1)
 x=[0:n2-1]*dx;
 z=[0:n1-1]*dt;
 figure('units','normalized','Position',[0.2 0.4 1, 0.4],'color','w');
-subplot(1,5,1);drr_imagesc(data,0.4,2,x,z);xlabel('Position (km)','Fontsize',15);ylabel('Time (s)','Fontsize',15);title('Data','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
-subplot(1,5,2);drr_imagesc(diffr,0.4,2,x,z);xlabel('Position (km)','Fontsize',15);ylabel('Time (s)','Fontsize',15);title('Ground-truth diffraction','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
-subplot(1,5,3);drr_imagesc(data-diffr,0.4,2,x,z);xlabel('Position (km)','Fontsize',15);ylabel('Time (s)','Fontsize',15);title('Ground-truth reflection','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
-subplot(1,5,4);drr_imagesc(diffr1,0.4,2,x,z);xlabel('Position (km)','Fontsize',15);ylabel('Time (s)','Fontsize',15);title('LDRR diffraction','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
-subplot(1,5,5);drr_imagesc(data-diffr1,0.4,2,x,z);xlabel('Position (km)','Fontsize',15);ylabel('Time (s)','Fontsize',15);title('LDRR reflection','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);
+subplot(1,5,1);drr_imagesc(data,0.4,2,x,z);xlabel('Position (km)','Fontsize',15);ylabel('Time (s)','Fontsize',15);title('Data','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-2.5,-0.1,'a)','color','k','Fontsize',24,'fontweight','bold','HorizontalAlignment','left');
+subplot(1,5,2);drr_imagesc(diffr,0.4,2,x,z);xlabel('Position (km)','Fontsize',15);title('Ground-truth diffraction','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-2.5,-0.1,'b)','color','k','Fontsize',24,'fontweight','bold','HorizontalAlignment','left');
+subplot(1,5,3);drr_imagesc(data-diffr,0.4,2,x,z);xlabel('Position (km)','Fontsize',15);title('Ground-truth reflection','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-2.5,-0.1,'c)','color','k','Fontsize',24,'fontweight','bold','HorizontalAlignment','left');
+subplot(1,5,4);drr_imagesc(diffr1,0.4,2,x,z);xlabel('Position (km)','Fontsize',15);title('LDRR diffraction','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-2.5,-0.1,'d)','color','k','Fontsize',24,'fontweight','bold','HorizontalAlignment','left');
+subplot(1,5,5);drr_imagesc(data-diffr1,0.4,2,x,z);xlabel('Position (km)','Fontsize',15);title('LDRR reflection','Fontsize',15,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',15);text(-2.5,-0.1,'e)','color','k','Fontsize',24,'fontweight','bold','HorizontalAlignment','left');
 print(gcf,'-dpng','-r300','test_matdrr_drr2d_diffraction.png');
-
-
+print(gcf,'-depsc','-r200','test_matdrr_drr2d_diffraction.eps');

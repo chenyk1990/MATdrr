@@ -98,7 +98,7 @@ a=(Niter-(1:Niter))/(Niter-1); %linearly decreasing
 d1=drr3drecon(d0,mask,flow,fhigh,dt,N,100,Niter,eps,verb,mode,a);
 
 % 2D quick comparison
-figure;drr_imagesc([d(:,:,9),d0(:,:,9),d1(:,:,9)]);caxis([-0.5,0.5]);
+% figure;drr_imagesc([d(:,:,9),d0(:,:,9),d1(:,:,9)]);caxis([-0.5,0.5]);
 
 %% using DRR
 flow=0;fhigh=250;dt=0.002;N=6;Niter=10;mode=1;verb=1;K=2;
@@ -106,7 +106,7 @@ a=(Niter-(1:Niter))/(Niter-1); %linearly decreasing
 d2=drr3drecon(d0,mask,flow,fhigh,dt,N,K,Niter,eps,verb,mode,a);
 
 % 2D quick comparison
-figure;drr_imagesc([d(:,:,9),d0(:,:,9),d2(:,:,9)]);caxis([-0.5,0.5]);
+% figure;drr_imagesc([d(:,:,9),d0(:,:,9),d2(:,:,9)]);caxis([-0.5,0.5]);
 
 %% using ODRR
 flow=0;fhigh=250;dt=0.002;N=6;Niter=10;mode=1;verb=1;K=2;O=1;
@@ -114,7 +114,7 @@ a=(Niter-(1:Niter))/(Niter-1); %linearly decreasing
 d3=odrr3drecon(d0,mask,flow,fhigh,dt,N,K,O,Niter,eps,verb,mode,a);
 
 % 2D quick comparison
-figure;drr_imagesc([d(:,:,9),d0(:,:,9),d3(:,:,9)]);caxis([-0.5,0.5]);
+% figure;drr_imagesc([d(:,:,9),d0(:,:,9),d3(:,:,9)]);caxis([-0.5,0.5]);
 
 %% calculate Signal-to-noise Ratio (SNR)
 snr0=drr_snr(d,d0,2) %observed data
@@ -137,12 +137,13 @@ snr3=drr_snr(d,d3,2) %ODRR method
 
 t=[0:300-1]*0.004;
 figure('units','normalized','Position',[0.2 0.4 0.4, 1],'color','w');
-subplot(6,1,1);drr_imagesc(d(:,:),0.1,2,1:400,t);xlabel('Trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('Clean'),'Fontsize',15,'fontweight','normal');
-subplot(6,1,2);drr_imagesc(dn(:,:),0.1,2,1:400,t);xlabel('Trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('Noisy (SNR=',num2str(snrn),' dB )'),'Fontsize',15,'fontweight','normal');
-subplot(6,1,3);drr_imagesc(d0(:,:),0.1,2,1:400,t);xlabel('Trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('Incomplete (SNR=',num2str(snr0),' dB )'),'Fontsize',15,'fontweight','normal');
-subplot(6,1,4);drr_imagesc(d1(:,:),0.1,2,1:400,t);xlabel('Trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('RR (SNR=',num2str(snr1),' dB )'),'Fontsize',15,'fontweight','normal');
-subplot(6,1,5);drr_imagesc(d2(:,:),0.1,2,1:400,t);xlabel('Trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('DRR (SNR=',num2str(snr2),' dB )'),'Fontsize',15,'fontweight','normal');
-subplot(6,1,6);drr_imagesc(d3(:,:),0.1,2,1:400,t);xlabel('Trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('ODRR (SNR=',num2str(snr3),' dB )'),'Fontsize',15,'fontweight','normal');
+subplot(6,1,1);drr_imagesc(d(:,:),0.1,2,1:400,t);ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('Clean'),'Fontsize',15,'fontweight','normal');text(-40,-0.3,'a)','color','k','Fontsize',25,'fontweight','bold','HorizontalAlignment','left');
+subplot(6,1,2);drr_imagesc(dn(:,:),0.1,2,1:400,t);ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('Noisy (SNR=',num2str(snrn),' dB )'),'Fontsize',15,'fontweight','normal');text(-40,-0.3,'b)','color','k','Fontsize',25,'fontweight','bold','HorizontalAlignment','left');
+subplot(6,1,3);drr_imagesc(d0(:,:),0.1,2,1:400,t);ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('Incomplete (SNR=',num2str(snr0),' dB )'),'Fontsize',15,'fontweight','normal');text(-40,-0.3,'c)','color','k','Fontsize',25,'fontweight','bold','HorizontalAlignment','left');
+subplot(6,1,4);drr_imagesc(d1(:,:),0.1,2,1:400,t);ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('RR (SNR=',num2str(snr1),' dB )'),'Fontsize',15,'fontweight','normal');text(-40,-0.3,'d)','color','k','Fontsize',25,'fontweight','bold','HorizontalAlignment','left');
+subplot(6,1,5);drr_imagesc(d2(:,:),0.1,2,1:400,t);ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('DRR (SNR=',num2str(snr2),' dB )'),'Fontsize',15,'fontweight','normal');text(-40,-0.3,'e)','color','k','Fontsize',25,'fontweight','bold','HorizontalAlignment','left');
+subplot(6,1,6);drr_imagesc(d3(:,:),0.1,2,1:400,t);xlabel('Trace','Fontsize',12,'fontweight','normal');ylabel('Time (s)','Fontsize',12,'fontweight','normal');set(gca,'Linewidth',2,'Fontsize',12,'Fontweight','normal');title(strcat('ODRR (SNR=',num2str(snr3),' dB )'),'Fontsize',15,'fontweight','normal');text(-40,-0.3,'f)','color','k','Fontsize',25,'fontweight','bold','HorizontalAlignment','left');
 print(gcf,'-dpng','-r300','test_matdrr_odrr3drecon.png');
+print(gcf,'-depsc','-r200','test_matdrr_odrr3drecon.eps');
 
 

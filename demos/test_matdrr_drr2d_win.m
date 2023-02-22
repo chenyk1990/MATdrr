@@ -68,11 +68,16 @@ fprintf('SNR of LDRR is %g\n',drr_snr(d,d2));
 fprintf('Difference between two versions is %g\n',norm(d2-d3));
 
 %% plot results
+x=1:n2;z=[0:n1-1]*0.004;
 figure('units','normalized','Position',[0.2 0.4 0.55, 0.45]);
-subplot(1,6,1);drr_imagesc(d);caxis([-0.5,0.5]);axis off;title('Clean');
-subplot(1,6,2);drr_imagesc(dn);caxis([-0.5,0.5]);axis off;title('Noisy');
-subplot(1,6,3);drr_imagesc(d1);caxis([-0.5,0.5]);axis off;title('DRR');
-subplot(1,6,4);drr_imagesc(d2);caxis([-0.5,0.5]);axis off;title('LDRR');
-subplot(1,6,5);drr_imagesc(dn-d1);caxis([-0.5,0.5]);axis off;title('DRR');
-subplot(1,6,6);drr_imagesc(dn-d2);caxis([-0.5,0.5]);axis off;title('LDRR');
+subplot(1,6,1);drr_imagesc(d,2,0.5,x,z);caxis([-0.5,0.5]);xlabel('Trace','Fontsize',15);ylabel('Time (s)','Fontsize',15);set(gca,'Linewidth',2,'Fontsize',12);axis on;title('Clean');text(-20,-0.1,'a)','color','k','Fontsize',20,'fontweight','bold','HorizontalAlignment','left');
+subplot(1,6,2);drr_imagesc(dn,2,0.5,x,z);caxis([-0.5,0.5]);xlabel('Trace','Fontsize',15);set(gca,'Linewidth',2,'Fontsize',12);axis on;title('Noisy');text(-20,-0.1,'b)','color','k','Fontsize',20,'fontweight','bold','HorizontalAlignment','left');
+subplot(1,6,3);drr_imagesc(d1,2,0.5,x,z);caxis([-0.5,0.5]);xlabel('Trace','Fontsize',15);set(gca,'Linewidth',2,'Fontsize',12);axis on;title('DRR');text(-20,-0.1,'c)','color','k','Fontsize',20,'fontweight','bold','HorizontalAlignment','left');
+subplot(1,6,4);drr_imagesc(d2,2,0.5,x,z);caxis([-0.5,0.5]);xlabel('Trace','Fontsize',15);set(gca,'Linewidth',2,'Fontsize',12);axis on;title('LDRR');text(-20,-0.1,'d)','color','k','Fontsize',20,'fontweight','bold','HorizontalAlignment','left');
+subplot(1,6,5);drr_imagesc(dn-d1,2,0.5,x,z);caxis([-0.5,0.5]);xlabel('Trace','Fontsize',15);set(gca,'Linewidth',2,'Fontsize',12);axis on;title('DRR');text(-20,-0.1,'e)','color','k','Fontsize',20,'fontweight','bold','HorizontalAlignment','left');
+subplot(1,6,6);drr_imagesc(dn-d2,2,0.5,x,z);caxis([-0.5,0.5]);xlabel('Trace','Fontsize',15);set(gca,'Linewidth',2,'Fontsize',12);axis on;title('LDRR');text(-20,-0.1,'f)','color','k','Fontsize',20,'fontweight','bold','HorizontalAlignment','left');
 print(gcf,'-dpng','-r300','test_matdrr_drr2d_win.png');
+print(gcf,'-depsc','-r200','test_matdrr_drr2d_win.eps');
+
+
+
