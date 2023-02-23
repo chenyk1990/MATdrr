@@ -8,7 +8,7 @@
 %  Written by Yangkang Chen
 %  Feb, 2018
 %  Modified on Dec, 2020
-%  Further polished on July, 2022
+%  Further polished on July, 2022, Feb, 2023
 %
 %  This program is free software: you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published
@@ -37,7 +37,7 @@ addpath(genpath('~/MATdrr'));
 load('usarray_200901181411_wfm.mat');
 % d, dists(shot receiver distance/offset in degree), stla, stlo, t 
 
-% figure;yc_imagesc([d(:,:)]);
+% figure;drr_imagesc([d(:,:)]);
 
 %% rm bad trace
 inds=[18,41,70];
@@ -58,27 +58,6 @@ mlo=[-116,-102];
 %binning
 [d3d,x1,y1,mask]=drr_bin3d(d0,stlo0,stla0,16,28,mlo(1),mla(1),mlo(2),mla(2));
 [stlo1,stla1]=meshgrid(x1,y1);
-% figure;plot(stlo0,stla0,'bv');hold on;
-% plot(stlo1(:),stla1(:),'r*');
-% print(gcf,'-depsc','-r200','grids.eps');
-
-% figure;imagesc(squeeze(mask(1,:,:))');colorbar;set(gca,'YDir','normal');
-% 
-% figure;
-% subplot(1,2,1);imagesc(squeeze(d3d(:,13,:)));caxis([-0.05,0.05]);colormap(gray);
-% subplot(1,2,2);imagesc(squeeze(d3d(:,:,10)));caxis([-0.05,0.05]);colormap(gray);
-% 
-
-%% test if mask is correct
-% tt=(d3d.*mask-d3d);
-% norm(tt(:)) %0->correct
-% 
-% ratio=size(find(mask==1))/size(mask(:));
-% fprintf('Sampling ratio is %g\n',ratio);
-% 
-% figure;
-% subplot(1,2,1);imagesc(squeeze(mask(:,13,:)));caxis([0,1]);colormap(jet);colorbar;
-% subplot(1,2,2);imagesc(squeeze(mask(:,:,10)));caxis([0,1]);colormap(jet);colorbar;
 
 %% global processing
 flow=0;fhigh=0.5;dt=1;N=8;Niter=10;mode=1;verb=1;eps=0.00001;K=4;
@@ -86,42 +65,12 @@ a=(Niter-(1:Niter))/(Niter-1); %linearly decreasing
 d1=drr3drecon(d3d,mask,flow,fhigh,dt,N,K,Niter,eps,verb,mode,a);
 
 
-figure;yc_imagesc([d3d(:,:),d1(:,:)]);
+% figure;drr_imagesc([d3d(:,:),d1(:,:)]);
 
 d2=drr3drecon_otg(d0,stlo0,stla0,16,28,mlo(1),mla(1),mlo(2),mla(2),flow,fhigh,dt,N,K,Niter,eps,verb,mode);
 
-figure;yc_imagesc([d3d(:,:),d1(:,:),d2(:,:)]);
+% figure;drr_imagesc([d3d(:,:),d1(:,:),d2(:,:)]);
 
-% %% local processing (first way, directly utilize drr_win3dmask.m; second way, use drr3drecon_win.m, which is an integrated function, instead)
-% % [n1,n2,n3]=size(d3d);
-% % param.dt=dt;
-% % param.flow=flow;
-% % param.fhigh=fhigh;
-% % param.N=N;
-% % param.K=4;
-% % param.niter=Niter;
-% % param.a=(Niter-(1:Niter))/(Niter-1); %linearly decreasing;
-% % param.eps=0.00001;
-% % param.mode=1;
-% % param.verb=1;
-% % n1win=2000;n2win=n2;n3win=n3;
-% % r1=0.5;r2=0.5;r3=0.5;
-% % d2=drr_win3dmask(@localdrr3drecon, mask, param, d3d, n1win, n2win, n3win, r1, r2, r3);
-% % 
-% % param.amode=2;
-% % d3=drr_win3dmask(@localdrr3drecon_auto, mask, param, d3d, n1win, n2win, n3win, r1, r2, r3);
-% 
-% %% fixed-rank
-% [n1,n2,n3]=size(d3d);
-% n1win=2000;n2win=n2;n3win=n3;r1=0.5;r2=0.5;r3=0.5;
-% d2=drr3drecon_win(d3d,mask,flow,fhigh,dt,N,K,Niter,eps,verb,mode,a,n1win,n2win,n3win,r1,r2,r3);
-% 
-% %% automatically chosen ranks (cleaner)
-% amode=2;eps2=nan;%if amode=2, then eps3 is useless
-% %N=[4,N]; %N can also have a lower limit
-% d3=drr3drecon_win_auto(d3d,mask,flow,fhigh,dt,N,K,Niter,eps,verb,mode,amode,a,eps2,n1win,n2win,n3win,r1,r2,r3);
-% 
-% 
 
 %% plot the results
 x1=750;
@@ -138,7 +87,7 @@ ylim([31.5,50.2]);
 ylabel('Latitude (^o)','Fontsize',20);
 xlabel('Time (s)','Fontsize',20);
 title('Raw','Fontsize',20);
-yc_framebox(x1,x2,y1,y2,'r',2);
+drr_framebox(x1,x2,y1,y2,'r',2);
 text(0,52,'a)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
 
 subplot(2,3,2);
@@ -148,7 +97,7 @@ ylim([31.5,50.2]);
 ylabel('Latitude (^o)','Fontsize',20);
 xlabel('Time (s)','Fontsize',20);
 title('DRR','Fontsize',20);
-yc_framebox(x1,x2,y1,y2,'r',2);
+drr_framebox(x1,x2,y1,y2,'r',2);
 text(0,52,'b)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
 
 subplot(2,3,3);
@@ -158,7 +107,7 @@ ylim([31.5,50.2]);
 ylabel('Latitude (^o)','Fontsize',20);
 xlabel('Time (s)','Fontsize',20);
 title('OTG','Fontsize',20);
-yc_framebox(x1,x2,y1,y2,'r',2);
+drr_framebox(x1,x2,y1,y2,'r',2);
 text(0,52,'c)','color','k','Fontsize',30,'fontweight','bold','HorizontalAlignment','left');
 
 %% zoomed comparison
