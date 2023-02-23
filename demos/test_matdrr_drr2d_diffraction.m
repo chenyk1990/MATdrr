@@ -46,7 +46,7 @@ d1=drr3d_win_auto(data,lf,hf,dt,N,K,verb,n1win,n2win,n3win,r1,r2,r3,mode);%refle
 diffr1=data-d1; %diffraction from LDRR 
 
 % Quick visualization
-figure;drr_imagesc([data,diffr,diffr1,data-diffr,d1]);
+% figure;drr_imagesc([data,diffr,diffr1,data-diffr,d1]);
 
 %% SNR of the separated diffraction
 drr_snr(diffr,diffr1)
