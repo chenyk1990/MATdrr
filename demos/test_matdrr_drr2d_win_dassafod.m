@@ -7,7 +7,7 @@
 % svn co https://github.com/aaspip/MATdrr/trunk ./MATdrr
 % or git clone https://github.com/aaspip/MATdrr ./
 %
-% Related pacakge: 
+% Related pacakge:
 % https://github.com/chenyk1990/dasmrrcoh
 % https://github.com/chenyk1990/dasmrrcoh-dataonly
 
@@ -40,6 +40,10 @@ n1win=512;n2win=200;n3win=1;
 r1=0.5;r2=0.5;r3=0.5;
 d_bpmfmrr=drr3d_win(d_bpmf',0,50,1/250,2,4,0,n1win,n2win,n3win,r1,r2,r3)';
 save(sprintf('processed/eq%d.mat',ieq),'d_bp','d_bpmf','d_bpmfmrr');
+
+[n1,n2]=size(data);
+t=[0:n2-1]*(1/250);
+x=1:n1;
 
 figure('units','normalized','Position',[0.2 0.4 0.7, 0.6],'color','w');
 ax1=subplot(2,2,1);
