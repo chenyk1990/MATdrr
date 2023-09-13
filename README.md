@@ -11,6 +11,8 @@
     Chen, Y., Huang, W., Zhang, D., & Chen, W. (2016). An open-source Matlab code package for improved rank-reduction 3D seismic data denoising and reconstruction. Computers & Geosciences, 95, 59-66.
     
     Chen, Y., Zhang, D., Jin, Z., Chen, X., Zu, S., Huang, W., & Gan, S. (2016). Simultaneous denoising and reconstruction of 5-D seismic data via damped rank-reduction method. Geophysical Journal International, 206(3), 1695-1717.
+
+    Chen, Y., Huang, W., Yang, L., Oboue, Y.A.S.I., Saad, O.M., and Chen Y.F. 2023, DRR: An open-source multi-platform package for the damped rank-reduction method and its applications in seismology. Computers & Geosciences, 180, 105440.
     
 BibTeX:
 
@@ -44,6 +46,15 @@ BibTeX:
 	  volume={95},
 	  pages={59-66},
 	  year={2016}
+	}
+
+	@article{chen2023drr,
+	  title={DRR: an open-source multi-platform package for the damped rank-reduction method and its applications in seismology},
+	  author={Yangkang Chen and Weilin Huang and Liuqing Yang and Yapo Abol\'{e} Serge Innocent Obou\'{e} and Omar M. Saad and Yunfeng Chen},
+	  journal={Computers \& Geosciences},
+	  volume={180},
+	  pages={105440},
+	  year={2023}
 	}
 
 -----------
